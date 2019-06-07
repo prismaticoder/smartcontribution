@@ -37,3 +37,8 @@ switch ($current_url) {
     <link rel="stylesheet" href="css/myStyles.css">
     <title>Smart Contribution | <?php echo $title;?> </title>
 </head>
+
+<body>
+
+<header class="w3-container"><h2><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> Smart Contribution App</i></a></h2></header>
+<hr>
