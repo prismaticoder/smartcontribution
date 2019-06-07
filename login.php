@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
+<?php require_once('partials/header.php') ?>
+
 <body>
-    
+    <form method="POST" action="index.php">
+    <div class="form-group">
 </body>
-</html>
