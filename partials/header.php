@@ -1,20 +1,21 @@
 <?php
 
-require_once('../config/config.php');
+require_once('config/config.php');
 
 $current_url = $_SERVER['REQUEST_URI'];
+$main_dir = 'smartcontribution';
 
 switch ($current_url) {
-    case '/customers/createCustomer.php':
+    case '/'. $main_dir. 'customers/createCustomer.php':
         $title = 'Add a Customer';
         break;
-    case '/customers/viewAllCustomers.php':
+    case '/'. $main_dir. 'customers/viewAllCustomers.php':
         $title = 'View All Customers';
         break;
-    case '/login.php':
+    case '/'. $main_dir. '/login.php':
         $title = 'Admin Login';
         break;
-    case '/index.php':
+    case '/'. $main_dir. '/index.php':
         $title = 'Home';
         break;
     default:
@@ -31,7 +32,8 @@ switch ($current_url) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/w3.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/w3.css">
+    <link rel="stylesheet" href="css/myStyles.css">
     <title>Smart Contribution | <?php echo $title;?> </title>
 </head>

@@ -1,3 +1,10 @@
 .login-div {
-    top: 30%;
+    position: fixed;
+    margin-top: 10%;
+    border: solid 2px;
+    padding: 45px;
+}
+
+.submit-btn {
+    width: 100%;
 }
