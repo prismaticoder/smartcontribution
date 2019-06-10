@@ -4,18 +4,19 @@ ob_start();
 session_start();
 
 //HostName
-define($host, 'localhost');
+$host = 'localhost';
 //Database
-define($db, 'smart_contribution');
+$db = 'smart_contribution';
 //Username
-define($user, 'root');
+$user ='root';
 //Password
-define($pass, '');
+$pass = '';
 
 $conn = mysqli_connect($host, $user, $pass, $db);
 if (!$conn) {
     die('Connection Error : '. mysqli_connect_error());
 }
+$GLOBALS['connection'] = $conn;
 
 // define site path
 define('DIR','http://localhost/smartcontribution/');

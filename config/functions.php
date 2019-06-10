@@ -68,8 +68,9 @@ function logout() {
 };
 
 //Function to calculate balance
-function calculate_balance($rate, $date_diff, $cur_date, $reg_date) {
-
+function calculate_balance($rate, $cur_date, $reg_date) {
+//Get the date_diff
+//Balance is rate multiplied by the rate diff in addition to the left amount for the previous transaction.
 }
 
 ?>
