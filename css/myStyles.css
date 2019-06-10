@@ -1,6 +1,6 @@
 .login-div {
     position: fixed;
-    margin-top: 10%;
+    margin-top: 5%;
     border: solid 2px;
     padding: 45px;
 }
@@ -9,6 +9,19 @@
     width: 100%;
 }
 
-header>h1 {
+.my-header {
+    text-decoration: underline;
     /* font-family: 'brush script mt'; */
+}
+.powder-blue {
+    background-color: #4056a1 !important;
+}
+.yellow {
+    background-color: #d79922 !important;
+}
+.water-melon {
+    background-color: #f13c20!important;
+}
+a:hover {
+    color: #fff;
 }
