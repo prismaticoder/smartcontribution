@@ -21,7 +21,18 @@ switch ($current_url) {
     default:
         $title = '';
         break;
-}
+};
+
+login_required();
+
+
+if (isset($_GET['logout'])) {
+    logout();
+    }
+
+//Set the uniqueness of the session;
+$user = $_SESSION['user'];
+$role = $_SESSION['role'];
 
 ?>
 
@@ -35,10 +46,28 @@ switch ($current_url) {
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/w3.css">
     <link rel="stylesheet" href="css/myStyles.css">
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.css" />
     <title>Smart Contribution | <?php echo $title;?> </title>
 </head>
 
 <body>
 
-<header class="w3-container"><h2><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> Smart Contribution App</i></a></h2></header>
+<header class="w3-container w3-padding-16 powder-blue">
+    <div class="w3-left">
+    <h2><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> Smart Contribution App</i></a></h2>
+    </div>
+    <div class="w3-right w3-padding-16">
+        <a href="./?logout"><button class="btn">Home</button></a>
+        <button type="button" class="btn" data-toggle="dropdown">Customers <i class="fa fa-angle-down"></i></button>
+        <ul class="dropdown-menu">
+            <li><a href="#">HTML</a></li>
+            <li><a href="#">CSS</a></li>
+            <li><a href="#">JavaScript</a></li>
+        </ul>
+        <button type="" class="btn">Reports <i class="fa fa-angle-down"></i></button>
+        <a href="customers/createCustomer.php"><button type="" class="btn">Make A Contribution</button></a>
+        <a href=""><button type="" class="btn"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?></button></a>
+    </div>
+</header>
 <hr>
+
