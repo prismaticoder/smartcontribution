@@ -26,7 +26,7 @@ if (isset($_POST['submit'])) {
 
 <body>
 
-<header class="w3-container"><h2><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> Smart Contribution App</i></a></h2></header>
+<header class="w3-container powder-blue w3-padding-16"><h2><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> Smart Contribution App</i></a></h2></header>
 <hr>
 <body>
     <div class="container">

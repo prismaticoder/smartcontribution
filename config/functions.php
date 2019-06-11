@@ -1,12 +1,14 @@
 <?php
 
 function exec_query($query) {
-    $result = mysqli_query($gcon,$query);
+    $gcon = $GLOBALS['connection'];
+    $result = mysqli_query($gcon,$query) or die(mysqli_error($gcon));
     return $result;
 }
 
 //Function  to log a user in
 function login($user, $pass) {
+    $gcon = $GLOBALS['connection'];
     $user = strip_tags(mysqli_real_escape_string($gcon,$user));
     $pass = strip_tags(mysqli_real_escape_string($gcon,$pass));
 
@@ -80,6 +82,7 @@ function calculate_balance($rate, $cur_date, $reg_date) {
 
 function check_customer($customer_no) {
     //Function to validate if a customer already exists before adding to the db
+    $customer_no = strtolower($customer_no);
     $result = exec_query("SELECT * FROM `main_customers` WHERE `customer_id` = '$customer_no'");
 
     if (mysqli_num_rows($result) !== 0) {

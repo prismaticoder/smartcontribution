@@ -6,11 +6,20 @@ $current_url = $_SERVER['REQUEST_URI'];
 $main_dir = 'smartcontribution';
 
 switch ($current_url) {
-    case '/'. $main_dir. 'customers/createCustomer.php':
+    case '/'. $main_dir. '/createCustomer.php':
         $title = 'Add a Customer';
         break;
-    case '/'. $main_dir. 'customers/viewAllCustomers.php':
+    case '/'. $main_dir. '/viewAllCustomers.php':
         $title = 'View All Customers';
+        break;
+    case '/'. $main_dir. '/contribution/addContribution.php':
+        $title = 'Make a Contribution';
+        break;
+    case '/'. $main_dir. '/contribution/editContribution.php':
+        $title = 'Edit Contribution';
+        break;
+    case '/'. $main_dir. '/reports/report.php':
+        $title = 'Reports';
         break;
     case '/'. $main_dir. '/login.php':
         $title = 'Admin Login';
@@ -57,15 +66,15 @@ $role = $_SESSION['role'];
     <h2><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> Smart Contribution App</i></a></h2>
     </div>
     <div class="w3-right w3-padding-16">
-        <a href="./?logout"><button class="btn">Home</button></a>
-        <button type="button" class="btn" data-toggle="dropdown">Customers <i class="fa fa-angle-down"></i></button>
+        <a href="./?logout"><button class="btn"><i class="fa fa-home"></i> Home</button></a>
+        <button type="button" class="btn" data-toggle="dropdown"><i class="fa fa-users"></i> Customers <i class="fa fa-angle-down"></i></button>
         <ul class="dropdown-menu">
             <li><a href="#">HTML</a></li>
             <li><a href="#">CSS</a></li>
             <li><a href="#">JavaScript</a></li>
         </ul>
-        <button type="" class="btn">Reports <i class="fa fa-angle-down"></i></button>
-        <a href="customers/createCustomer.php"><button type="" class="btn">Make A Contribution</button></a>
+        <button type="" class="btn"><i class="fa fa-book"></i> Reports <i class="fa fa-angle-down"></i></button>
+        <button type="" class="btn"><i class="fa fa-euro"></i> Contributions <i class="fa fa-angle-down"></i></button>
         <a href=""><button type="" class="btn"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?></button></a>
     </div>
 </header>

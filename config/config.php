@@ -17,6 +17,7 @@ if (!$conn) {
     die('Connection Error : '. mysqli_connect_error());
 }
 $GLOBALS['connection'] = $conn;
+$gcon = $GLOBALS['connection'];
 
 // define site path
 define('DIR','http://localhost/smartcontribution/');
