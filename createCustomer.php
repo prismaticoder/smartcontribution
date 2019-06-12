@@ -5,4 +5,4 @@ require_once('partials/header.php');
 
 ?>
 
-<!-- The procedures to add a custoem -->
+<!-- The procedures to add a custoem. Card Number, Customer Name, Phone Number, Zone(Dropdown), Registration Date, Official Savings Rate, That will be all -->
