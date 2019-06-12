@@ -17,7 +17,7 @@ $count = 1;
 <section class="container">
     <div class="container">
         <h2 class="w3-center"> CUSTOMERS REGISTERED TO ISEOLUWA VENTURES</h2>
-        <table class="table table-striped table-bordered">
+        <table class="table table-bordered my-table">
             <tr>
                 <th>S/N</th>
                 <th>CARD NUMBER</th>
@@ -38,11 +38,67 @@ $count = 1;
             <td>" . $customer_rows['reg_date'] . "</td>
             <td>" . $customer_rows['zone'] . "</td>
             <td style='text-align:center'> 
-            <a href='/customer.php?custNo=". $customer_rows['customer_id'] ."'<i class='fa fa-external-link fa-2x view w3-hover-text-green'></i></a> 
-            <a href='/editCustomer.php?custNo=". $customer_rows['customer_id'] ."'<i class='fa fa-pencil fa-2x edit w3-hover-text-blue-grey'></i></a> 
-            <i class='fa fa-close fa-2x delete w3-hover-text-red'></i> </td>
-            </tr>";
+            <a href='/customer.php?custNo=". $customer_rows['customer_id'] ."'<i class='fa fa-external-link click-btn view'></i></a> 
+            <a data-toggle=\"modal\" href=\"#editJobModal". $customer_rows['customer_id'] ."\"><i class='fa fa-pencil click-btn edit'></i></a> 
+            <i class='fa fa-close click-btn delete'></i> </td>
+            </tr>
+            <div class='modal fade' id='editJobModal". $customer_rows['customer_id'] ."' tabindex='-1' role='dialog' aria-labelledby='editJobModalLabel' aria-hidden='true'>
+            <div class='modal-dialog ' role='document'>
+              <div class='modal-content'>
+                <div class='modal-header bg-light'>
+                  <!-- Create Job Modal-->
+                  <h5 class='modal-title' id='editJobModalLabel'>Customer #". $customer_rows['customer_id'] ."</h5>
+                  <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                    <span aria-hidden='true'>&times;</span>
+                  </button>
+                </div>
+                <div class='modal-body'>
+                  <div class='nrm-wrapper'>
+                    <div class='form-group'>
+                        <label for='card_no'>Card No</label>
+                      <input type='text' name='card_no' value='". $customer_rows['customer_id'] . "' class='form-control br-0'>
+                    </div>
+                    <div class='form-group'>
+                    <label for='cust_name'>Customer Name</label>
+                      <input type='text' name='cust_name' value='". $customer_rows['customer_name'] . "' class='form-control br-0'>
+                    </div>
+                    <div class='form-group'>
+                    <label for='cust_no'>Phone Number</label>
+                      <input type='number' name='cust_no' value='". $customer_rows['customer_phone_num'] . "' class='form-control br-0'>
+                    </div>
+                    <div class='row'>
+                      <div class='col-lg-6'>
+                        <div class='form-group'>
+                    <label for='zone'>Zone</label>
+                    <select name='zone' id='' class='form-control br-0'>
+                        <option selected>". $customer_rows['zone'] . "</option>
+                        <option value=''>Junior</option>
+                        <option value=''>Intermidiate</option>
+                        <option value=''>Expert</option>
+                      </select>
+                        </div>
+                      </div>
+                      <div class='col-lg-6'>
+                        <div class='form-group'>
+                        <label for='reg_date'>Registration Date</label>
+                          <input name='reg_date' value='" . $customer_rows['reg_date'] . "' class='form-control br-0'>
+                        </div>
+                      </div>
+                    </div>
+                    <div class='row'>
+                      <div class='col-12'>
+                        <input type='submit' class='submit btn btn-info b-7 br-0 btn-block' value='Save Changes'>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>";
             $count++;
         }
             ?>
         </table>
+
+  
+<?php require_once('partials/footer.php') ?>
