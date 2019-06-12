@@ -34,15 +34,40 @@ header a:hover {
     text-align: center;
     color: #4056a1;
 }
-.edit, .edit:hover {
-    margin-right: 15px;
+.click-btn {
+    padding: 6px;
+    margin-right: 10px;
     text-decoration: none;
+    border: solid transparent 2px;
+    border-radius: 50%;
 }
-.view, .view:hover {
-    margin-right: 15px;
+.edit:hover {
+    border: solid #d79922 2px;
+    color: #d79922;
     text-decoration: none;
+    transition-duration: 0.6s;
 }
-.delete, .delete:hover {
-    margin-right: 15px;
+.view:hover {
+    border: solid #4056a1 2px;
+    color: #4056a1;
     text-decoration: none;
+    transition-duration: 0.6s;
+}
+.delete:hover {
+    border: solid #f13c20 2px;
+    color: #f13c20;
+    text-decoration: none;
+    transition-duration: 0.6s;
+}
+th:nth-child() {
+    color: #f13c20;
+}
+.my-form {
+    padding: 6px;
+    border-radius: 5px;
+    border: solid 1px;
+    width: 70%;
+}
+.my-button:hover {
+    background-color: #343a40;
 }
