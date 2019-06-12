@@ -19,12 +19,28 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
 $count = 1;
 
 // Only view customer should not be a modal, the rest (add new customer and edit existing customer should be in form of a modal)
+//Ask user if he wants to discard changes if he opts to close the edit modal. Don't just let him close it like that
 
 ?>
 
 <section class="container">
     <div class="container">
         <h2 class="w3-center"> CUSTOMERS REGISTERED TO ISEOLUWA VENTURES</h2>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <input class="my-form w3-border-blue-grey" id="searchForm" placeholder="Search By Card No, Name"/>
+                    <i class="fa fa-search" style="color:#f13c20" ></i>
+                    <!-- <button id="searchBtn" class="btn btn-danger" type="submit">Go!</button> -->
+                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-2">
+                    <a href="createcustomer.php"><button class="btn my-button w3-white w3-border-blue-grey"><i style="color:#f13c20" class="fa fa-plus"></i> ADD NEW CUSTOMER</button></a>
+                </div>
+            </div>
+        </div>
+        <hr>
         <table class="table table-bordered my-table">
             <tr>
                 <th>S/N</th>
