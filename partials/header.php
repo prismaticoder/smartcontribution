@@ -10,7 +10,7 @@ switch ($current_url) {
         $title = 'Add a Customer';
         break;
     case '/'. $main_dir. '/viewAllCustomers.php':
-        $title = 'View All Customers';
+        $title = 'Customers';
         break;
     case '/'. $main_dir. '/contribution/addContribution.php':
         $title = 'Make a Contribution';
@@ -66,21 +66,22 @@ $role = $_SESSION['role'];
     <h2><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> Smart Contribution App</i></a></h2>
     </div>
     <div class="w3-right w3-padding-16">
-        <a href="./?logout"><button class="btn btn-dark"><i style="color:#f13c20" class="fa fa-home"></i> Home</button></a>
-        <button type="button" class="btn btn-dark" data-toggle="dropdown"><i style="color:#f13c20" class="fa fa-users"></i> Customers <i class="fa fa-angle-down"></i></button>
+        <a href="./?logout"><button class="btn btn-dark"><i class="fa fa-home"></i> Home</button></a>
+        <button type="button" class="btn btn-dark" data-toggle="dropdown"><i class="fa fa-users"></i> Customers <i class="fa fa-angle-down"></i></button>
         <ul class="dropdown-menu">
             <li><a href="#"><i class="fa fa-angle-double-right"></i> View All Customers</a></li>
             <li><a href="#"><i class="fa fa-angle-double-right"></i> Add New Customer</a></li>
             <li><a href="#">JavaScript</a></li>
         </ul>
-        <button type="" class="btn btn-dark"><i style="color:#f13c20" class="fa fa-book"></i> Reports <i class="fa fa-angle-down"></i></button>
-        <button type="" class="btn btn-dark"><i style="color:#f13c20" class="fa fa-euro"></i> Contributions <i class="fa fa-angle-down"></i></button>
+        <button type="" class="btn btn-dark"><i class="fa fa-book"></i> Reports <i class="fa fa-angle-down"></i></button>
+        <button type="" class="btn btn-dark"><i class="fa fa-euro"></i> Contributions <i class="fa fa-angle-down"></i></button>
         <ul class="dropdown-menu">
             <li><a href="#"><i class="fa fa-angle-double-right"></i> Make A Contribution</a></li>
             <li><a href="#"><i class="fa fa-angle-double-right"></i> Loan Withdrawal</a></li>
             <li><a href="#">JavaScript</a></li>
         </ul>
-        <a href=""><button type="" class="btn btn-dark"><i style="color:#f13c20" class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?></button></a>
+        <?php if ($role == "SUPERADMIN") {echo "<button class=\"btn btn-dark\"><i class=\"fa fa-gear\"></i> Admins</button>"; } ?>
+        <a href=""><button type="" class="btn btn-dark"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?></button></a>
         <ul class="dropdown-menu">
             <li><a href="./?logout"><i class="fa fa-sign-out"></i> Logout</a></li>
         </ul>
