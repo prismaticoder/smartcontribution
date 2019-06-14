@@ -80,16 +80,77 @@ function calculate_balance($rate, $cur_date, $reg_date) {
 //Balance is rate multiplied by the rate diff in addition to the left amount for the previous transaction.
 }
 
-function check_customer($customer_no) {
-    //Function to validate if a customer already exists before adding to the db
-    $customer_no = strtolower($customer_no);
-    $result = exec_query("SELECT * FROM `main_customers` WHERE `customer_id` = '$customer_no'");
-
-    if (mysqli_num_rows($result) !== 0) {
-        echo "<script>alert('A Customer already exists for this particular number!')</script>";
+//Function to perform an action on the customer details based on what the user decides to do
+function customerAction($array,$action) {
+    $id = $array['id'];
+    $card_no = $array['card_no'];
+    $name = $array['name'];
+    $phone_num = $array['phone_num'];
+    $reg_date = $array['reg_date'];
+    $zone_id = $array['zone_id'];
+    $srate = $array['srate'];
+    $lrate = $array['lrate'];
+    $author = $array['author'];
+    
+    if ($action == 'add') {
+        if (exec_query("INSERT INTO main_customers 
+        (`card_no`,`customer_name`,`customer_phone_num`,`reg_date`,`zone_id`,`savings_rate`,`loan_rate`,`author`) VALUES 
+        ('$card_no','$name','$phone_num','$reg_date',$zone_id,'$srate','$lrate','$author')")) 
+            {
+            echo "<script>alert('Customer Successfully Added!')</script>";
+            header('Location: '.DIR.'viewAllCustomers.php');
+            exit();
+    
+        }
+        else {
+            echo "<script>alert('Customer Addition Unsuccessful')</script>";
+        }
     }
+
+    else if ($action == 'update') {
+        if (exec_query("UPDATE `main_customers` 
+        SET `card_no` = '$card_no', `customer_name` = '$name',`customer_phone_num` = '$phone_num',`reg_date` = '$reg_date',`zone_id` = '$zone_id',`savings_rate` = '$srate',`loan_rate` = '$lrate' 
+        WHERE `main_customers`.`customer_id` = '$id'")) 
+            {
+            echo "<script>alert('Update Successful!')</script>";
+            // echo "<meta http-equiv='refresh' content='0'>";
+            header('Location: '.DIR.'viewAllCustomers.php');
+            exit();
+        }
+        else {
+            echo "<script>alert('Update Unsuccessful')</script>";
+        }
+    }
+
+}
+
+function check_customer($array,$action) {
+    //Function to validate if a customer already exists before adding to the db
+    // $customer_no = strtolower($customer_no);
+    $customer_no = $array['card_no'];
+    $result = exec_query("SELECT * FROM `main_customers` WHERE `card_no` = '$customer_no'");
+
+    if ($action == 'update') {
+        $id = $array['id'];
+        while ($rows = mysqli_fetch_assoc($result)) {
+            $rowID = $rows['customer_id'];
+        }
+        if ($id == $rowID) {
+            $similar = 1;
+        }
+        else {
+            $similar = 0;
+        }
+    }
+
+    if (mysqli_num_rows($result) > 0 and $similar !== 1) {
+        echo "<script>alert('A Customer already exists for this particular number!')</script>";
+        // header('Location: '.DIR.'viewAllCustomers.php');
+        // exit();
+    }
+    
     else {
-        //Execute The SQL statement to add into the db
+        customerAction($array,$action);
     }
 }
 
