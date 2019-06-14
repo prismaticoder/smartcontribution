@@ -71,3 +71,7 @@ th:nth-child() {
 .my-button:hover {
     background-color: #343a40;
 }
+.required label:after {
+    content:"*";
+    color:red;
+  }
