@@ -82,9 +82,12 @@ th:nth-child() {
     color:red;
   }
 .my-table {
-    border-spacing: 5px;
+    border-spacing: 1px;
     border-collapse: separate;
 }
 .selector {
     color: #4056a1;
+}
+.hidden {
+    display: none;
 }
