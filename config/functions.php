@@ -97,13 +97,17 @@ function customerAction($array,$action) {
         (`card_no`,`customer_name`,`customer_phone_num`,`reg_date`,`zone_id`,`savings_rate`,`loan_rate`,`author`) VALUES 
         ('$card_no','$name','$phone_num','$reg_date',$zone_id,'$srate','$lrate','$author')")) 
             {
-            echo "<script>alert('Customer Successfully Added!')</script>";
-            header('Location: '.DIR.'viewAllCustomers.php');
-            exit();
+            echo "<script>
+            alert('Customer Successfully Added!');
+            window.location.href='./viewAllCustomers.php';
+            </script>";
     
         }
         else {
-            echo "<script>alert('Customer Addition Unsuccessful')</script>";
+            echo "<script>
+            alert('Customer Addition Unsuccessful!');
+            window.location.href='./payment.php';
+            </script>";
         }
     }
 
@@ -112,10 +116,10 @@ function customerAction($array,$action) {
         SET `card_no` = '$card_no', `customer_name` = '$name',`customer_phone_num` = '$phone_num',`reg_date` = '$reg_date',`zone_id` = '$zone_id',`savings_rate` = '$srate',`loan_rate` = '$lrate' 
         WHERE `main_customers`.`customer_id` = '$id'")) 
             {
-            echo "<script>alert('Update Successful!')</script>";
-            // echo "<meta http-equiv='refresh' content='0'>";
-            header('Location: '.DIR.'viewAllCustomers.php');
-            exit();
+            echo "<script>
+            alert('Customer Update Successful!');
+            window.location.href='./payment.php';
+            </script>";
         }
         else {
             echo "<script>alert('Update Unsuccessful')</script>";
