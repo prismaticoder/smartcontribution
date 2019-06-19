@@ -158,5 +158,22 @@ function check_customer($array,$action) {
     }
 }
 
+function validate_gurrantor($number) {
+    $result = exec_query("SELECT * FROM `main_customers` WHERE `card_no` = '$number'");
+
+    if (mysqli_num_rows($result) !== 0) {
+        while ($rows = mysqli_fetch_assoc($result)) {
+            $name = $rows['customer_name'];
+        }
+        return $name;
+    }
+    else {
+        echo "<script>
+        alert('Customer Not Found!');
+        window.location.href='./payment.php';
+        </script>"; 
+    }
+}
+
 
 ?>
