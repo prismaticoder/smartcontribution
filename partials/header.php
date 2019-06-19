@@ -47,7 +47,7 @@ $role = $_SESSION['role'];
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,12 +58,34 @@ $role = $_SESSION['role'];
     <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.css" />
     <link rel="stylesheet" href="css/jquery-ui.min.css">
     <script src="js/jquery-3.4.1.min.js"></script>
+    <!-- <script type="text/javascript" src="js/angular.min.js"> -->
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
         $( function() {
-            $( "#datepicker" ).datepicker();
-        } );
+            $( ".datepicker" ).datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+            if ($('#validator').val() !== null) {
+                let validatorBtn = $('#validator');
+                validatorBtn.prop('disabled', true);
+            }
+            $('#reset').click(function() {
+                $('#validator').prop('disabled', false);
+                $('#guarrantor').removeAttr('value');
+            })
+                        });
+  </script>
+  <script>
+    //Function to automatically derive the total savings or loan without refreshing the page
+  function getTotal() {
+      let srate = document.getElementById('savings_rate').value;
+      let dayNo = document.getElementById('dayNo').value;
+
+      let total = srate * dayNo;
+
+      document.getElementById('savings_total').value = total;
+  }
   </script>
     <title>Smart Contribution | <?php echo $title;?> </title>
 </head>
@@ -83,14 +105,9 @@ $role = $_SESSION['role'];
             <li><a href="#">JavaScript</a></li>
         </ul>
         <button type="" class="btn btn-dark"><i class="fa fa-book"></i> Reports <i class="fa fa-angle-down"></i></button>
-        <button type="" class="btn btn-dark"><i class="fa fa-euro"></i> Contributions <i class="fa fa-angle-down"></i></button>
-        <ul class="dropdown-menu">
-            <li><a href="#"><i class="fa fa-angle-double-right"></i> Make A Contribution</a></li>
-            <li><a href="#"><i class="fa fa-angle-double-right"></i> Loan Withdrawal</a></li>
-            <li><a href="#">JavaScript</a></li>
-        </ul>
+        <a href="./payment.php"><button type="" class="btn btn-dark"><i class="fa fa-euro"></i> Perform Transaction</button></a>
         <?php if ($role == "SUPERADMIN") {echo "<button class=\"btn btn-dark\"><i class=\"fa fa-gear\"></i> Admins</button>"; } ?>
-        <a href=""><button type="" class="btn btn-dark"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?></button></a>
+        <a href=""><button type="" class="btn btn-dark"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?> <i class="fa fa-angle-down"></i></button></a>
         <ul class="dropdown-menu">
             <li><a href="./?logout"><i class="fa fa-sign-out"></i> Logout</a></li>
         </ul>
