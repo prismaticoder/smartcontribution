@@ -9,9 +9,15 @@
     width: 100%;
 }
 
-.my-header {
-    text-decoration: underline;
-    /* font-family: 'brush script mt'; */
+mark {
+    background-color: #4056a1;
+    color: white;
+}
+
+.header-text {
+    color: #4056a1;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    text-align: center;
 }
 .powder-blue {
     background-color: #4056a1 !important;
@@ -75,3 +81,10 @@ th:nth-child() {
     content:"*";
     color:red;
   }
+.my-table {
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+.selector {
+    color: #4056a1;
+}
