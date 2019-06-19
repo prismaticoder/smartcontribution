@@ -3,12 +3,29 @@ require_once('partials/header.php');
 
 //Indicate that login is required to view this particular page
 
-$customer_result = exec_query(
-    "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,zone.zone 
+if (!isset($_GET['zone']) or $_GET['zone'] == '') {
+    $customer_result = exec_query(
+        "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,zone.zone 
+        FROM `main_customers` 
+        INNER JOIN `zone` 
+        ON main_customers.zone_id = zone.zone_id"
+        );
+    $selectZone = 'ALL ZONES';
+    $customer_count = mysqli_num_rows($customer_result);
+}
+else {
+    $zone = $_GET['zone'];
+    $selectZone = strtoupper($_GET['zone']);
+    $customer_result = exec_query("SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,zone.zone 
     FROM `main_customers` 
     INNER JOIN `zone` 
-    ON main_customers.zone_id = zone.zone_id"
-    );
+    ON main_customers.zone_id = zone.zone_id
+    WHERE zone.zone = '$zone' ");
+    $customer_count = mysqli_num_rows($customer_result);
+}
+    
+
+
 
 $zone_result = exec_query("SELECT zone_id,zone FROM `zone` WHERE 1");
 $zones = [];
@@ -65,11 +82,29 @@ if (isset($_POST['editSubmit'])) {
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
-                    <input class="my-form w3-border-blue-grey" id="searchForm" placeholder="Search By Card No, Name"/>
+                    <input type="search" class="my-form w3-border-blue-grey" id="searchForm" placeholder="Search By Card No, Name"/>
                     <i id="searchBtn" class="fa fa-search" style="color:#f13c20" ></i>
                     <!-- <button id="searchBtn" class="btn btn-danger" type="submit">Go!</button> -->
                 </div>
-                <div class="col-md-4"></div>
+                <div class="col-md-5">
+                    Filter by Zone
+                    <form method='get'>
+                    <select name='zone' id='' class='form-control br-0'>
+                    <option selected value> All  </option>
+                                        <?php
+                                            for ($i=0; $i < count($zones) ; $i++) {
+                                                if (null !== $_GET['zone'] and $zones[$i] == $_GET['zone']) {
+                                                    echo "<option selected>".$zones[$i]."</option>";
+                                                }
+                                                else {
+                                                    echo "<option>".$zones[$i]."</option>";
+                                                }
+                                            }
+                                        ?>
+                    </select>
+                    <button class="btn btn-dark" type='submit'>GO!</button>
+                    </form>
+                </div>
                 <div class="col-md-2">
                     <a data-toggle="modal" href="#addModal"><button class="btn my-button w3-white w3-border-blue-grey">ADD NEW CUSTOMER <i style="color:#f13c20" class="fa fa-plus"></i></button></a>
                 </div>
@@ -77,6 +112,8 @@ if (isset($_POST['editSubmit'])) {
         </div>
         <hr>
         <table class="table table-bordered my-table">
+            <h3>ZONE : <?php echo $selectZone;?></h3>
+            <h3>CUSTOMERS : <?php echo $customer_count;?></h3>
             <tr>
                 <th>S/N</th>
                 <th>CARD NUMBER</th>
@@ -241,7 +278,7 @@ if (isset($_POST['editSubmit'])) {
                                 <div class='col-lg-6'>
                                     <div class='form-group'>
                                         <label for='reg_date'>Registration Date</label>
-                                        <input name='reg_date' value='<?php echo date('Y/m/d')?>' class='form-control br-0'>
+                                        <input type="text" class="datepicker" name='reg_date' class='form-control br-0'>
                                     </div>
                                 </div>
                             </div>
