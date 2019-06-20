@@ -66,14 +66,30 @@ $role = $_SESSION['role'];
             $( ".datepicker" ).datepicker({
                 dateFormat: "yy-mm-dd"
             });
-            if ($('#validator').val() !== null) {
+            if ($('#custNo').val() == "") {
+                $('#validator').prop('disabled', true);
+                $('#reset').prop('disabled', true);
+                $('#guarrantor').prop('disabled', true);
+                $('.datepicker').prop('disabled', true);
+            }
+            else {
+                if ($('#validator').val() !== null) {
                 let validatorBtn = $('#validator');
                 validatorBtn.prop('disabled', true);
             }
-            $('#reset').click(function() {
-                $('#validator').prop('disabled', false);
-                $('#guarrantor').removeAttr('value');
-            })
+                else {
+                    let validatorBtn = $('#validator');
+                    validatorBtn.prop('disabled', false);
+                }
+                $('#reset').click(function() {
+                    $('#validator').prop('disabled', false);
+                    $('#guarrantor').removeAttr('value');
+                })
+                $('#guarrantor').change(function() {
+                    $('#validator').prop('disabled', false);
+                })
+            }
+            
                         });
   </script>
   <script>
@@ -99,7 +115,7 @@ $role = $_SESSION['role'];
     <div class="w3-right w3-padding-16">
         <a href="./?logout"><button class="btn btn-dark"><i class="fa fa-home"></i> Home</button></a>
         <button type="button" class="btn btn-dark" data-toggle="dropdown"><i class="fa fa-users"></i> Customers <i class="fa fa-angle-down"></i></button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" id="dropdown1">
             <li><a href="#"><i class="fa fa-angle-double-right"></i> View All Customers</a></li>
             <li><a href="#"><i class="fa fa-angle-double-right"></i> Add New Customer</a></li>
             <li><a href="#">JavaScript</a></li>
