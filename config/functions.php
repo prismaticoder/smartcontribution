@@ -164,15 +164,38 @@ function validate_gurrantor($number) {
     if (mysqli_num_rows($result) !== 0) {
         while ($rows = mysqli_fetch_assoc($result)) {
             $name = $rows['customer_name'];
+            $num = $rows['card_no'];
         }
-        return $name;
+        if ($num !== $_GET['custNo']) {
+            echo "
+            <script>alert('Validation Successful!')</script>
+            ";
+            return $name;
+        }
+        else {
+            echo "
+            <script>alert('You cannot select the same customer as a guarrantor!')</script>
+            ";
+        }
     }
     else {
         echo "<script>
         alert('Customer Not Found!');
-        window.location.href='./payment.php';
         </script>"; 
     }
+}
+
+function getContributionNumber($id) {
+    //function to get the number of contributions a user has made in a month
+    $month = date('M',strtotime(date('Y-m-d')));
+    $result = exec_query("SELECT SUM(day_number) FROM `contributions` WHERE `month` = '$month' and `customer_id` = '$id'");
+
+    $i = 0;
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $sum = $row['SUM(day_number)'];
+    }
+    return $sum;
 }
 
 
