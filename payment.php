@@ -36,28 +36,33 @@ else {
     $name = null;
 }
 
-
+//Submit Daily Savings
 if (isset($_POST['savings_submit'])) {
     if (!empty($_POST['savings_total']) and !empty($_POST['transaction_date'])) {
-        $savings_total = $_POST['savings_total'];
-        $current_date = date('Y-m-d');
-        $transaction_date = $_POST['transaction_date'];
-        if ($transaction_date <= $current_date) {
-            $month = date('M',strtotime($transaction_date));
-            $year = date('Y',strtotime($transaction_date));
-            $customer_id = $_POST['id'];
-            $savings_rate = $_POST['savings_rate'];
-            $dayNo = $_POST['savingsDayNo'];
-            $result1 = exec_query("INSERT INTO `contributions` (`customer_id`,`transaction_date`,`month`,`year`,`savings_rate`,`day_number`,`amount`) VALUES ('$customer_id','$transaction_date','$month','$year','$savings_rate','$dayNo','$savings_total')");
-            if ($result1) {
-                $result2 = exec_query("UPDATE `main_customers` SET `balance` = `balance` + '$savings_total' WHERE `main_customers`.`customer_id` = '$customer_id' ");
-                echo "<script>alert('Contribution Added Successfully!')</script>";
+        $savingsArray = [];
+        $savingsArray['amount'] = $_POST['savings_total'];
+        $savingsArray['transaction_date'] = $_POST['transaction_date'];
+        $savingsArray['customer_id'] = $_POST['id'];
+        $savingsArray['dayNo'] = $_POST['savingsDayNo'];
+        $savingsArray['balance'] = $_POST['balance'];
+        $savingsArray['savings_rate'] = $_POST['savings_rate'];
+        //Function to execute contribution
+        exec_contribution($savingsArray, 'dailysavings');    
+    }
+}
 
-            }
-        }
-        else {
-            echo "<script>alert('Invalid Date Selected!')</script>";
-        }
+//Submit Loan Savings
+if (isset($_POST['loan_submit'])) {
+    if (!empty($_POST['loan_total']) and !empty($_POST['transaction_date'])) {
+        $loanArray = [];
+        $loanArray['amount'] = $_POST['loan_total'];
+        $loanArray['transaction_date'] = $_POST['transaction_date'];
+        $loanArray['customer_id'] = $_POST['id'];
+        $loanArray['dayNo'] = $_POST['loanDayNo'];
+        $loanArray['balance'] = $_POST['balance'];
+        $loanArray['loan_rate'] = $_POST['loan_rate'];
+        //Function to execute contribution
+        exec_contribution($loanArray, 'offsetloan');    
     }
 }
 ?>
@@ -80,7 +85,7 @@ if (isset($_POST['savings_submit'])) {
         </div>
         <div class="col-md-5"></div>
     </div>
-    <div class="row w3-padding-32">
+    <div class="row w3-padding-24">
         <div class="col-lg-3">
             <h4 class="header-text">CUSTOMER DETAILS</h4>
             <hr>
@@ -110,10 +115,13 @@ if (isset($_POST['savings_submit'])) {
                     <td class="selector">Month</td> <td><?php echo date('M',strtotime(date('Y-m-d'))); ?></td>
                 </tr>
                 <tr>
-                    <td class="selector">Days Contributed So Far (This Month)</td> <td><?php echo getContributionNumber($rows['customer_id'])?></td>
+                    <td class="selector">Days Contributed So Far (Savings)</td> <td><?php echo getContributionNumber($rows['customer_id'],'savings')?></td>
                 </tr>
                 <tr>
-                    <td class="selector">Current Balance</td> <td><?php printf($rows['balance']) ?></td>
+                    <td class="selector">Days Contributed So Far (Loan)</td> <td><?php echo getContributionNumber($rows['customer_id'],'loan')?></td>
+                </tr>
+                <tr>
+                    <td class="selector">Current Balance</td> <td><?php echo getBalance($rows['customer_id']) ?></td>
                 </tr>
             </table>
         </div>
@@ -132,6 +140,7 @@ if (isset($_POST['savings_submit'])) {
                     <td colspan="2">
                         <label for="date">Date of Transaction</label>
                         <input name="transaction_date" type="text" class="datepicker form-control" value="<?php echo date('Y-m-d')?>">
+                        <input name="balance" type="hidden" value="<?php echo getBalance($rows['customer_id']) ?>">
                     </td>
                 </tr>
             
@@ -148,31 +157,32 @@ if (isset($_POST['savings_submit'])) {
                 </tr>
                 <tr>
                     <td>
-                            <label for="saveDay">No of Days</label>
-                            <input min="0" max="31" id="dayNo" name="savingsDayNo" onchange="getTotal()" type="number" class="form-control" value="1">
+                            <label for="savingsDayNo">No of Days</label>
+                            <input min="1" max="31" id="savingsDayNo" name="savingsDayNo" type="number" class="form-control" value="1">
                     </td>
                     <td>
-                            <label for="loanDay">No of Days</label>
-                            <input min="0" max="31" type="number"  class="form-control" value="1">
+                            <label for="loanDayNo">No of Days</label>
+                            <input min="1" max="31" step="1"  id="loanDayNo"  name="loanDayNo" type="number"  class="form-control" value="1">
                     </td>
                 </tr>
                 <tr>
                     <td>
                             Total :
-                            <input id="savings_total" name="savings_total" type="number" class="" value="1">
+                            <input id="savings_total" readonly name="savings_total" type="number" class="" value="1">
                             <input type="hidden" name="id" value="<?php printf($rows['customer_id'])?>">
                     </td>
                     <td>
                             Total :
-                            <input id="loan_total" type="number" class="" value="1">
+                            <input id="loan_total" readonly name="loan_total" type="number" class="" value="1">
+                            <input type="hidden" name="id" value="<?php printf($rows['customer_id'])?>">
                     </td>
                 </tr>
                 <tr>
                     <td>
-                            <button type="submit" name="savings_submit" class="btn btn-primary form-control">Submit!</button>
+                            <button type="submit" id="savings_submit" name="savings_submit" class="btn btn-primary form-control">Submit!</button>
                     </td>
                     <td>
-                            <button type="submit" name="loan_submit" class="btn btn-danger form-control">Submit!</button>
+                            <button type="submit" id="loan_submit" name="loan_submit" class="btn btn-danger form-control">Submit!</button>
                     </td>
                 </tr>
             </form>
