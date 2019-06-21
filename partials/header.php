@@ -88,19 +88,45 @@ $role = $_SESSION['role'];
                 $('#guarrantor').change(function() {
                     $('#validator').prop('disabled', false);
                 })
+
+                $('#savingsDayNo').change(function() {
+                    let srate = $('#savings_rate').val();
+                    let dayNo = $(this).val();
+
+                    let total = srate * dayNo;
+                    $('#savings_total').val(total);
+                })
+                $('#loanDayNo').change(function() {
+                    let lrate = $('#loan_rate').val();
+                    let dayNo = $(this).val();
+
+                    let total = lrate * dayNo;
+                    $('#loan_total').val(total);
+                })
             }
             
                         });
   </script>
   <script>
     //Function to automatically derive the total savings or loan without refreshing the page
-  function getTotal() {
-      let srate = document.getElementById('savings_rate').value;
-      let dayNo = document.getElementById('dayNo').value;
+  function getTotal(event) {
+      if (event.target.id = 'savings_submit') {
+        let srate = document.getElementById('savings_rate').value;
+        let dayNo = document.getElementById('savingsdayNo').value;
 
-      let total = srate * dayNo;
+        let total = srate * dayNo;
 
-      document.getElementById('savings_total').value = total;
+        document.getElementById('savings_total').value = total;
+      }
+      else if (event.target.id = 'loan_submit') {
+        let lrate = document.getElementById('loan_rate').value;
+        let dayNo = document.getElementById('loandayNo').value;
+
+        let total = lrate * dayNo;
+
+        document.getElementById('loan_total').value = total;
+      }
+      
   }
   </script>
     <title>Smart Contribution | <?php echo $title;?> </title>
