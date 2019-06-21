@@ -185,17 +185,103 @@ function validate_gurrantor($number) {
     }
 }
 
-function getContributionNumber($id) {
+function getContributionNumber($id,$type) {
     //function to get the number of contributions a user has made in a month
     $month = date('M',strtotime(date('Y-m-d')));
-    $result = exec_query("SELECT SUM(day_number) FROM `contributions` WHERE `month` = '$month' and `customer_id` = '$id'");
+    if ($type == 'savings') {
+        $result = exec_query("SELECT SUM(savingsDayNo) FROM `transactions` WHERE `month` = '$month' and `customer_id` = '$id' and `type` = 'Daily Savings (CR)'");
 
-    $i = 0;
+        $i = 0;
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            if ($row['SUM(savingsDayNo)'] == null) {
+                $sum = 0;
+            }
+            else {
+                $sum = $row['SUM(savingsDayNo)'];
+            }    
+        }
+    }
+    else {
+        $result = exec_query("SELECT SUM(loanDayNo) FROM `transactions` WHERE `month` = '$month' and `customer_id` = '$id' and `type` = 'Daily Loan Offset (CR)'");
+
+        $i = 0;
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            if ($row['SUM(loanDayNo)'] == null) {
+                $sum = 0;
+            }
+            else {
+                $sum = $row['SUM(loanDayNo)'];
+            }
+            
+        }
+    }
+    
+    
+    return $sum;
+}
+
+function exec_contribution($array,$action) {
+    //Function to execute a contribution transaction
+    $current_date = date('Y-m-d');
+    if ($action == 'dailysavings') {
+        $transaction_date = $array['transaction_date'];
+        $amount = $array['amount'];
+        $customer_id = $array['customer_id'];
+        if ($transaction_date <= $current_date) {
+            $month = date('M',strtotime($transaction_date));
+            $year = date('Y',strtotime($transaction_date));
+            $dayNo = $array['dayNo'];
+            $balance = $array['balance'] + $amount;
+            $savings_rate = $array['savings_rate'];
+            $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`savings_rate`,`savingsDayNo`,`amount`,`type`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','$savings_rate','$dayNo','$amount','Daily Savings (CR)','$balance')");
+            if ($result1) {
+                $result2 = exec_query("UPDATE `main_customers` SET `balance` = `balance` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+                echo "<script>alert('Contribution Added Successfully!');</script>";
+
+            }
+        }
+        else {
+            echo "<script>alert('Invalid Date Selected!')</script>";
+        }
+    }
+    else {
+        $transaction_date = $array['transaction_date'];
+        $amount = $array['amount'];
+        $customer_id = $array['customer_id'];
+        if ($transaction_date <= $current_date) {
+            $month = date('M',strtotime($transaction_date));
+            $year = date('Y',strtotime($transaction_date));
+            $dayNo = $array['dayNo'];
+            $balance = $array['balance'] + $amount;
+            $loan_rate = $array['loan_rate'];
+            $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`loan_rate`,`loanDayNo`,`amount`,`type`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','$loan_rate','$dayNo','$amount','Daily Loan Offset (CR)','$balance')");
+            if ($result1) {
+                $result2 = exec_query("UPDATE `main_customers` SET `balance` = `balance` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+                echo "<script>alert('Contribution Added Successfully!');</script>";
+
+            }
+        }
+        else {
+            echo "<script>alert('Invalid Date Selected!')</script>";
+        }
+    }
+
+}
+
+function exec_loan($array) {
+    //Function to execute a Loan transaction
+
+}
+
+function getBalance($id) {
+    $result = exec_query("SELECT `balance` FROM `main_customers` WHERE `customer_id` = '$id'");
 
     while ($row = mysqli_fetch_assoc($result)) {
-        $sum = $row['SUM(day_number)'];
+        $balance = $row['balance'];
     }
-    return $sum;
+    return $balance;
 }
 
 
