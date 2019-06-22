@@ -69,8 +69,8 @@ $role = $_SESSION['role'];
             if ($('#custNo').val() == "") {
                 $('#validator').prop('disabled', true);
                 $('#reset').prop('disabled', true);
-                $('#guarrantor').prop('disabled', true);
-                $('.datepicker').prop('disabled', true);
+                $('#guarrantor').prop('readonly', true);
+                $('.datepicker').prop('readonly', true);
             }
             else {
                 if ($('#validator').val() !== null) {
@@ -136,7 +136,7 @@ $role = $_SESSION['role'];
 
 <header class="container-fluid w3-container w3-padding-16 powder-blue my-header">
     <div class="w3-left">
-    <h2><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> Smart Contribution App</i></a></h2>
+    <h2 class="w3-text-light-grey"><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> The PayDay App</i></a></h2>
     </div>
     <div class="w3-right w3-padding-16">
         <a href="./?logout"><button class="btn btn-dark"><i class="fa fa-home"></i> Home</button></a>
