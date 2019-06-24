@@ -65,6 +65,33 @@ if (isset($_POST['loan_submit'])) {
         exec_contribution($loanArray, 'offsetloan');    
     }
 }
+
+if (isset($_POST['submitLoan'])) {
+    if ($_POST['balance'] >= $_POST['loan_amount']) {
+        $collectionArray = [];
+        $collectionArray['transaction_date'] = $_POST['transaction_date'];
+        $collectionArray['customer_id'] = $_POST['id'];
+        $collectionArray['amount'] = $_POST['loan_amount'];
+        $collectionArray['author'] = $_POST['guarrantor'];
+        $collectionArray['balance'] = $_POST['balance'];
+
+        exec_loan($collectionArray);
+    }
+    else {
+        echo "<script>alert('This Customer is not eligible to request for a loan!')</script>";
+    }
+
+}
+
+if (isset($_POST['edit_submit'])) {
+    $savings_rate = $_POST['newSavingsRate'];
+    $loan_rate = $_POST['newLoanRate'];
+    $customer_id = $_POST['id'];
+
+    $result = exec_query("UPDATE `main_customers` SET `savings_rate` = '$savings_rate',`loan_rate` = '$loan_rate' WHERE `customer_id` = '$customer_id'");
+
+    echo "<script>alert('Details Updated Successfully, Refresh Page to see changes')</script>";
+}
 ?>
 
 
@@ -85,11 +112,17 @@ if (isset($_POST['loan_submit'])) {
         </div>
         <div class="col-md-5"></div>
     </div>
+    <hr>
+    <div class="row w3-padding-24">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4"><button class="btn btn-danger">REVERSE LAST TRANSACTION</button></div>
+        <div class="col-lg-4"></div>
+    </div>
     <div class="row w3-padding-24">
         <div class="col-lg-3">
             <h4 class="header-text">CUSTOMER DETAILS</h4>
             <hr>
-            <table class="my-table" border = "1" class="w3-padding-16" cellpadding="5">
+            <table class="table-bordered"  cellpadding="1">
                 <tr>
                     <td class="selector">Card No</td> <td><?php printf($rows['card_no']) ?></td>
                 </tr>
@@ -122,6 +155,9 @@ if (isset($_POST['loan_submit'])) {
                 </tr>
                 <tr>
                     <td class="selector">Current Balance</td> <td><?php echo getBalance($rows['customer_id']) ?></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><button data-toggle="modal" data-target="#editModal<?php printf($rows['card_no']) ?>" class="btn btn-primary">Edit Savings Rate/Loan Rate</button></td>
                 </tr>
             </table>
         </div>
@@ -198,18 +234,21 @@ if (isset($_POST['loan_submit'])) {
                         <td colspan="2">
                             <label for="date">Date of Transaction</label>
                             <input name="transaction_date" type="text" class="datepicker form-control" value="<?php echo date('Y-m-d')?>">
+                            <input type="hidden" name="id" value="<?php printf($rows['customer_id'])?>">
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <form method="post"  class="required">
+                            
                                 <label for="guarrantor">Guarrantor</label>
-                                <input required id="guarrantor" name="guarrantor" type="text" class="form-control" placeholder="Search By Card Number" value="<?php echo $name;?>">
+                                <input required id="guarrantor" name="guarrantor" type="text" class="form-control" placeholder="Search By Card Number">
+                                <small id="errorText"></small>
+                                <input name="balance" type="hidden" value="<?php echo getBalance($rows['customer_id']) ?>">
                         </td>
                         <td>
                                 <button type="submit" id="validator" name="validator" class="btn btn-primary form-control">Validate!</button><br><br>
                                 <button type="reset" id="reset" class="btn btn-danger form-control">Clear</button>
-                            </form>
+                            
                         </td>
                     </tr>
                     <tr>
@@ -220,7 +259,7 @@ if (isset($_POST['loan_submit'])) {
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <button type="submit" id="loan_submit" name="loan_submit" class="btn btn-primary form-control">Get Loan!</button>
+                            <button type="submit" id="loan_collect" name="submitLoan" class="btn btn-primary form-control">Get Loan!</button>
                         </td>
                     </tr>
                 </form>
@@ -228,5 +267,60 @@ if (isset($_POST['loan_submit'])) {
         </div>
     </div>
 </section>
+
+<!-- Edit Customer Modal -->
+<div class='modal fade' id='editModal<?php printf($rows['card_no']) ?>' tabindex='-1' role='dialog'data-backdrop="false" aria-labelledby='editModalLabel' aria-hidden='true'>
+                <div class='modal-dialog ' role='document'>
+                    <div class='modal-content'>
+                        <div class='modal-header bg-light'>
+                        <!-- Edit Customer Modal-->
+                            <h5 class='modal-title' id='editModalLabel'>CUSTOMER #<?php printf($rows['card_no']) ?></h5>
+                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                            <span aria-hidden='true'>&times;</span>
+                            </button>
+                        </div>
+                    <div class='modal-body'>
+                        <div class='nrm-wrapper'>
+                            <form method="post">
+                            <div class='form-group required'>
+                                <label for="card_no">Card No</label>
+                                <input type="hidden" value="<?php printf($rows['customer_id']) ?>" name="id">
+                                <input disabled type='text' name='card_no' value="<?php printf($rows['card_no']) ?>" class='form-control br-0' placeholder="Card Number">
+                            </div>
+                            <div class='form-group required'>
+                                <label for='cust_name'>Customer Name</label>
+                                <input disabled required type='text' name='cust_name' value="<?php printf($rows['customer_name']) ?>" class='form-control br-0' placeholder="Customer Name">
+                            </div>
+                            <div class='form-group'>
+                                <label for='cust_no'>Phone Number</label>
+                                <input disabled step="any" name='cust_no' value="<?php printf($rows['customer_phone_num']) ?>" class='form-control br-0' placeholder="e.g 09011111111">
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group required">
+                                        <label for="srate">Daily Savings Rate (NGN)</label>
+                                        <input required type="number" name="newSavingsRate" value="<?php printf($rows['savings_rate']) ?>" id="srate" name='srate' class='form-control br-0'>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group required">
+                                        <label for="lrate">Daily Loan Rate (NGN)</label>
+                                        <input required type="number" name="newLoanRate" value="<?php printf($rows['loan_rate']) ?>" id="lrate" name='lrate' class='form-control br-0' value="0">
+                                    </div>
+                                </div>
+                            </div>
+                                
+                            <div class='row'>
+                                <div class='col-12'>
+                                    <input type='submit' name='edit_submit' class='submit btn btn-info b-7 br-0 btn-block' value='EDIT CUSTOMER #<?php printf($rows['card_no']) ?>!'>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+</div>
+                
 
 <?php require_once('partials/footer.php'); ?>
