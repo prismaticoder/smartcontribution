@@ -73,22 +73,6 @@ $role = $_SESSION['role'];
                 $('.datepicker').prop('readonly', true);
             }
             else {
-                if ($('#validator').val() !== null) {
-                let validatorBtn = $('#validator');
-                validatorBtn.prop('disabled', true);
-            }
-                else {
-                    let validatorBtn = $('#validator');
-                    validatorBtn.prop('disabled', false);
-                }
-                $('#reset').click(function() {
-                    $('#validator').prop('disabled', false);
-                    $('#guarrantor').removeAttr('value');
-                })
-                $('#guarrantor').change(function() {
-                    $('#validator').prop('disabled', false);
-                })
-
                 $('#savingsDayNo').change(function() {
                     let srate = $('#savings_rate').val();
                     let dayNo = $(this).val();
@@ -103,9 +87,40 @@ $role = $_SESSION['role'];
                     let total = lrate * dayNo;
                     $('#loan_total').val(total);
                 })
+                // let custNo = $('#guarrantor').val()
+                $("#guarrantor").change(function() {
+                    $.ajax({
+                    url: 'getCustomerData.php',
+                    method: 'POST',
+                    data: {
+                        custNo: $(this).val()
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                            // let response = JSON.parse(responses)
+                            $('#errorText').html(response[0]);
+                            if (response[0] == 'Customer Exists!') {
+                                $('#errorText').style('color','green')
+                                $('#validator').prop('disabled',false)
+                                $('#validator').click(function() {
+                                    $("#guarrantor").val(response[1]);
+                                })
+                            }
+                            else {
+                                $('#validator').prop('disabled',true)
+                            }
+                        }
+                    
+                    })
+                })
             }
+                
             
                         });
+            
+                
+                
+            
   </script>
   <script>
     //Function to automatically derive the total savings or loan without refreshing the page
@@ -148,7 +163,7 @@ $role = $_SESSION['role'];
         </ul>
         <button type="" class="btn btn-dark"><i class="fa fa-book"></i> Reports <i class="fa fa-angle-down"></i></button>
         <a href="./payment.php"><button type="" class="btn btn-dark"><i class="fa fa-euro"></i> Perform Transaction</button></a>
-        <?php if ($role == "SUPERADMIN") {echo "<button class=\"btn btn-dark\"><i class=\"fa fa-gear\"></i> Admins</button>"; } ?>
+        <?php if ($role == "SUPERADMIN") {echo "<a href=\"admin_section.php\"><button class=\"btn btn-dark\"><i class=\"fa fa-gear\"></i> Admins</button></a>"; } ?>
         <a href=""><button type="" class="btn btn-dark"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?> <i class="fa fa-angle-down"></i></button></a>
         <ul class="dropdown-menu">
             <li><a href="./?logout"><i class="fa fa-sign-out"></i> Logout</a></li>
