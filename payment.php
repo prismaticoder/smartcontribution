@@ -6,7 +6,7 @@ if (!isset($_GET['custNo']) or $_GET['custNo'] == '') {
 }
 else {
     $card_no = $_GET['custNo'];
-    $query = ("SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.balance,zone.zone 
+    $query = ("SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.balance,main_customers.loan_collected,zone.zone 
     FROM `main_customers` 
     INNER JOIN `zone` 
     ON main_customers.zone_id = zone.zone_id
@@ -25,15 +25,6 @@ else {
         </script>";
         // header('Location: '.DIR. 'payment.php');
     }
-}
-
-if (isset($_POST['validator'])) {
-    if (isset($_POST['guarrantor'])) {
-        $name = validate_gurrantor($_POST['guarrantor']);
-    }
-}
-else {
-    $name = null;
 }
 
 //Submit Daily Savings
@@ -78,20 +69,12 @@ if (isset($_POST['submitLoan'])) {
         exec_loan($collectionArray);
     }
     else {
-        echo "<script>alert('This Customer is not eligible to request for a loan!')</script>";
+        echo "<script>alert('Error! Insufficient Balance')</script>";
     }
 
 }
 
-if (isset($_POST['edit_submit'])) {
-    $savings_rate = $_POST['newSavingsRate'];
-    $loan_rate = $_POST['newLoanRate'];
-    $customer_id = $_POST['id'];
 
-    $result = exec_query("UPDATE `main_customers` SET `savings_rate` = '$savings_rate',`loan_rate` = '$loan_rate' WHERE `customer_id` = '$customer_id'");
-
-    echo "<script>alert('Details Updated Successfully, Refresh Page to see changes')</script>";
-}
 ?>
 
 
@@ -148,10 +131,13 @@ if (isset($_POST['edit_submit'])) {
                     <td class="selector">Month</td> <td><?php echo date('M',strtotime(date('Y-m-d'))); ?></td>
                 </tr>
                 <tr>
-                    <td class="selector">Days Contributed So Far (Savings)</td> <td><?php echo getContributionNumber($rows['customer_id'],'savings')?></td>
+                    <td class="selector">Daily Contributions This Month (Savings)</td> <td><?php echo getContributionNumber($rows['customer_id'],'savings')?></td>
                 </tr>
                 <tr>
-                    <td class="selector">Days Contributed So Far (Loan)</td> <td><?php echo getContributionNumber($rows['customer_id'],'loan')?></td>
+                    <td class="selector">Daily Contributions This Month (Loan)</td> <td><?php echo getContributionNumber($rows['customer_id'],'loan')?></td>
+                </tr>
+                <tr>
+                    <td class="selector">Loan Collected</td> <td><?php printf($rows['loan_collected']) ?></td>
                 </tr>
                 <tr>
                     <td class="selector">Current Balance</td> <td><?php echo getBalance($rows['customer_id']) ?></td>
@@ -228,7 +214,7 @@ if (isset($_POST['edit_submit'])) {
         <div class="col-lg-4">
             <h4 class="header-text">LOANS</h4>
             <hr>
-            <table class="my-table" border = "0" class="w3-padding-16" cellpadding="10">
+            <table id="loanDiv" class="my-table" border = "0" class="w3-padding-16" cellpadding="10">
                 <form method="post">
                     <tr>
                         <td colspan="2">
@@ -244,9 +230,10 @@ if (isset($_POST['edit_submit'])) {
                                 <input required id="guarrantor" name="guarrantor" type="text" class="form-control" placeholder="Search By Card Number">
                                 <small id="errorText"></small>
                                 <input name="balance" type="hidden" value="<?php echo getBalance($rows['customer_id']) ?>">
+                                <input id="cardNo" type="hidden" value="<?php printf ($rows['card_no']) ?>">
                         </td>
                         <td>
-                                <button type="submit" id="validator" name="validator" class="btn btn-primary form-control">Validate!</button><br><br>
+                                <button id="validator" name="validator" class="btn btn-primary form-control">Validate!</button><br><br>
                                 <button type="reset" id="reset" class="btn btn-danger form-control">Clear</button>
                             
                         </td>
@@ -254,7 +241,7 @@ if (isset($_POST['edit_submit'])) {
                     <tr>
                         <td colspan="2">
                                 <label for="amount">Amount (NGN)</label>
-                                <input required id="amount" name="loan_amount" type="number" class="form-control" placeholder="Loan Amount" value="">
+                                <input required id="loan_amount" name="loan_amount" type="number" class="form-control" placeholder="Loan Amount" value="">
                         </td>
                     </tr>
                     <tr>
@@ -284,7 +271,7 @@ if (isset($_POST['edit_submit'])) {
                             <form method="post">
                             <div class='form-group required'>
                                 <label for="card_no">Card No</label>
-                                <input type="hidden" value="<?php printf($rows['customer_id']) ?>" name="id">
+                                <input type="hidden" value="<?php printf($rows['customer_id']) ?>" name="id" id="customerID">
                                 <input disabled type='text' name='card_no' value="<?php printf($rows['card_no']) ?>" class='form-control br-0' placeholder="Card Number">
                             </div>
                             <div class='form-group required'>
@@ -299,20 +286,20 @@ if (isset($_POST['edit_submit'])) {
                                 <div class="col-lg-6">
                                     <div class="form-group required">
                                         <label for="srate">Daily Savings Rate (NGN)</label>
-                                        <input required type="number" name="newSavingsRate" value="<?php printf($rows['savings_rate']) ?>" id="srate" name='srate' class='form-control br-0'>
+                                        <input required type="number" id="newSavingsRate" value="<?php printf($rows['savings_rate']) ?>" id="srate" name='srate' class='form-control br-0'>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group required">
                                         <label for="lrate">Daily Loan Rate (NGN)</label>
-                                        <input required type="number" name="newLoanRate" value="<?php printf($rows['loan_rate']) ?>" id="lrate" name='lrate' class='form-control br-0' value="0">
+                                        <input required type="number" id="newLoanRate" value="<?php printf($rows['loan_rate']) ?>" id="lrate" name='lrate' class='form-control br-0' value="0">
                                     </div>
                                 </div>
                             </div>
                                 
                             <div class='row'>
                                 <div class='col-12'>
-                                    <input type='submit' name='edit_submit' class='submit btn btn-info b-7 br-0 btn-block' value='EDIT CUSTOMER #<?php printf($rows['card_no']) ?>!'>
+                                    <input type='submit' id='edit_submit' class='submit btn btn-info b-7 br-0 btn-block' value='EDIT CUSTOMER #<?php printf($rows['card_no']) ?>!'>
                                 </div>
                             </div>
                             </form>
