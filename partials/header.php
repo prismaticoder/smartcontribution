@@ -73,6 +73,28 @@ $role = $_SESSION['role'];
                 $('.datepicker').prop('readonly', true);
             }
             else {
+                $.ajax({
+                    url: 'getCustomerData.php',
+                    method: 'POST',
+                    data: {custID: $('#custNo').val()},
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response[0] !== 'enable') {
+                            $('#loanDiv').prepend('<h6><i>Note: You have to be registered for at least 3 months to be eligible for a loan</i></h6>');
+                            $('#validator').prop('disabled', true);
+                            $('#reset').prop('disabled', true);
+                            $('#guarrantor').prop('disabled', true);
+                            $('#loan_collect').prop('disabled', true);
+                            $('#loan_amount').prop('disabled', true);
+                            $('#loanDayNo').prop('disabled', true);
+                            $('#loan_submit').prop('disabled', true);
+                        }
+                        if (response[1] == 'noloan') {
+                            $('#loanDayNo').prop('disabled', true);
+                            $('#loan_submit').prop('disabled', true);
+                        }
+                    }
+                })
                 $('#savingsDayNo').change(function() {
                     let srate = $('#savings_rate').val();
                     let dayNo = $(this).val();
@@ -93,14 +115,15 @@ $role = $_SESSION['role'];
                     url: 'getCustomerData.php',
                     method: 'POST',
                     data: {
-                        custNo: $(this).val()
+                        custNo: $(this).val(),
+                        cardNo: $('#cardNo').val()
                     },
                     dataType: 'json',
                     success: function(response) {
                             // let response = JSON.parse(responses)
                             $('#errorText').html(response[0]);
                             if (response[0] == 'Customer Exists!') {
-                                $('#errorText').style('color','green')
+                                $('#errorText').css('color','green')
                                 $('#validator').prop('disabled',false)
                                 $('#validator').click(function() {
                                     $("#guarrantor").val(response[1]);
@@ -108,9 +131,26 @@ $role = $_SESSION['role'];
                             }
                             else {
                                 $('#validator').prop('disabled',true)
+                                $('#errorText').css('color','red')
                             }
                         }
                     
+                    })
+                })
+                $('#edit_submit').click(function() {
+                    $.ajax({
+                        url: 'getCustomerData.php',
+                        method: 'POST',
+                        data: {
+                            savings_rate: $('#newSavingsRate').val(),
+                            loan_rate: $('#newLoanRate').val(),
+                            id: $('#customerID').val()
+                        },
+                        success: function(response) {
+                            alert(response);
+                            $('#loan_rate').val($('#newLoanRate').val());
+                            $('#savings_rate').val($('#newSavingsRate').val());
+                        }
                     })
                 })
             }
@@ -155,12 +195,7 @@ $role = $_SESSION['role'];
     </div>
     <div class="w3-right w3-padding-16">
         <a href="./?logout"><button class="btn btn-dark"><i class="fa fa-home"></i> Home</button></a>
-        <button type="button" class="btn btn-dark" data-toggle="dropdown"><i class="fa fa-users"></i> Customers <i class="fa fa-angle-down"></i></button>
-        <ul class="dropdown-menu" id="dropdown1">
-            <li><a href="#"><i class="fa fa-angle-double-right"></i> View All Customers</a></li>
-            <li><a href="#"><i class="fa fa-angle-double-right"></i> Add New Customer</a></li>
-            <li><a href="#">JavaScript</a></li>
-        </ul>
+        <a href="./viewAllCustomers.php"><button type="button" class="btn btn-dark"><i class="fa fa-users"></i> Customers </button></a>
         <button type="" class="btn btn-dark"><i class="fa fa-book"></i> Reports <i class="fa fa-angle-down"></i></button>
         <a href="./payment.php"><button type="" class="btn btn-dark"><i class="fa fa-euro"></i> Perform Transaction</button></a>
         <?php if ($role == "SUPERADMIN") {echo "<a href=\"admin_section.php\"><button class=\"btn btn-dark\"><i class=\"fa fa-gear\"></i> Admins</button></a>"; } ?>
