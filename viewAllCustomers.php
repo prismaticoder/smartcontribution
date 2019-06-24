@@ -81,32 +81,38 @@ if (isset($_POST['editSubmit'])) {
         <hr>
         <div class="container">
             <div class="row">
-                <div class="col-md-5">
-                    <input type="search" class="my-form w3-border-blue-grey" id="searchForm" placeholder="Search By Card No, Name"/>
-                    <i id="searchBtn" class="fa fa-search" style="color:#f13c20" ></i>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="searchForm">Search A Customer By Name</label>
+                        <input type="search" class="form-control" id="searchForm" placeholder="Search By Card No, Name"/>
+                    </div>
+                    <button class="btn btn-primary">Search! <i class="fa fa-search"></i></button>
                     <!-- <button id="searchBtn" class="btn btn-danger" type="submit">Go!</button> -->
                 </div>
-                <div class="col-md-5">
-                    Filter by Zone
+                <div class="col-md-4">
                     <form method='get'>
-                    <select name='zone' id='' class='form-control br-0'>
-                    <option selected value> All  </option>
-                                        <?php
-                                            for ($i=0; $i < count($zones) ; $i++) {
-                                                if (null !== $_GET['zone'] and $zones[$i] == $_GET['zone']) {
-                                                    echo "<option selected>".$zones[$i]."</option>";
-                                                }
-                                                else {
-                                                    echo "<option>".$zones[$i]."</option>";
-                                                }
-                                            }
-                                        ?>
-                    </select>
-                    <button class="btn btn-dark" type='submit'>GO!</button>
+                        <div class="form-group">
+                        <label for="zone">Filter by Zone</label>    
+                            <select name='zone' id='zone' class='form-control'>
+                                <option selected value> All </option>
+                                                    <?php
+                                                        for ($i=0; $i < count($zones) ; $i++) {
+                                                            if (null !== $_GET['zone'] and $zones[$i] == $_GET['zone']) {
+                                                                echo "<option selected>".$zones[$i]."</option>";
+                                                            }
+                                                            else {
+                                                                echo "<option>".$zones[$i]."</option>";
+                                                            }
+                                                        }
+                                                    ?>
+                                </select>
+                        </div>
+                            <button class="btn btn-primary" type='submit'>GO!</button>
                     </form>
                 </div>
-                <div class="col-md-2">
-                    <a data-toggle="modal" href="#addModal"><button class="btn my-button w3-white w3-border-blue-grey">ADD NEW CUSTOMER <i style="color:#f13c20" class="fa fa-plus"></i></button></a>
+                <div class="col-md-4">
+                                                    <label>.</label>
+                    <a data-toggle="modal" href="#addModal"><button class="btn btn-danger form-control">ADD NEW CUSTOMER <i class="fa fa-plus"></i></button></a>
                 </div>
             </div>
         </div>
@@ -278,7 +284,7 @@ if (isset($_POST['editSubmit'])) {
                                 <div class='col-lg-6'>
                                     <div class='form-group'>
                                         <label for='reg_date'>Registration Date</label>
-                                        <input type="text" class="datepicker" name='reg_date' class='form-control br-0'>
+                                        <input type="text" class="datepicker form-control" name='reg_date' class='form-control br-0'>
                                     </div>
                                 </div>
                             </div>
@@ -293,6 +299,8 @@ if (isset($_POST['editSubmit'])) {
               </div>
             </div>
             </div>
+    </div>
+</section>
 
   
 <?php require_once('partials/footer.php') ?>
