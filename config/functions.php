@@ -106,7 +106,7 @@ function customerAction($array,$action) {
         else {
             echo "<script>
             alert('Customer Addition Unsuccessful!');
-            window.location.href='./payment.php';
+            window.location.href='./viewAllCustomers.php';
             </script>";
         }
     }
@@ -118,7 +118,7 @@ function customerAction($array,$action) {
             {
             echo "<script>
             alert('Customer Update Successful!');
-            window.location.href='./payment.php';
+            window.location.href='./viewAllCustomers.php';
             </script>";
         }
         else {
@@ -272,14 +272,46 @@ function exec_contribution($array,$action) {
 
 function exec_loan($array) {
     //Function to execute a Loan transaction
+    $current_date = date('Y-m-d');
+    $transaction_date = $array['transaction_date'];
+    $amount = $array['amount'];
+    $customer_id = $array['customer_id'];
+    $author = $array['author'];
+    if ($transaction_date <= $current_date) {
+        $month = date('M',strtotime($transaction_date));
+        $year = date('Y',strtotime($transaction_date));
+        $balance = $array['balance'] - $amount;
+
+        $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`type`,`balance`,`author`) VALUES ('$customer_id','$transaction_date','$month','$year','$amount','Loan Collection (DR)','$balance', '$author')");
+        if ($result1) {
+            $result2 = exec_query("UPDATE `main_customers` SET `balance` = `balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+            echo "<script>alert('Successful Loan Collection!');</script>";
+
+        }
+    }
+    else {
+        echo "<script>alert('Invalid Date Selected!')</script>";
+    }
+
+
 
 }
 
 function getBalance($id) {
-    $result = exec_query("SELECT `balance` FROM `main_customers` WHERE `customer_id` = '$id'");
+    if ($id == "") {
+        $balance = null;
+    }
+    else {
+        $result = exec_query("SELECT `balance` FROM `main_customers` WHERE `customer_id` = '$id'");
 
-    while ($row = mysqli_fetch_assoc($result)) {
-        $balance = $row['balance'];
+        while ($row = mysqli_fetch_assoc($result)) {
+            if ($row['balance'] == null) {
+                $balance = 0;
+            }
+            else {
+                $balance = $row['balance'];
+            }
+        }
     }
     return $balance;
 }
