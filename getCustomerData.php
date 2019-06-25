@@ -14,7 +14,7 @@ if (isset($_POST['custNo']) and isset($_POST['cardNo'])) {
             $response2 = null;
         }
         else {
-            $response1 = "Customer Exists!";
+            $response1 = "Customer Exists! Click 'Submit'";
             while ($row = mysqli_fetch_assoc($result)) {
                 $response2 = $row['customer_name'];
             }
@@ -79,5 +79,60 @@ else if(isset($_POST['custID'])) {
 
 }
 
+else if (isset($_POST['id'])) {
+    $id = $_POST['id'];
+    $response = "";
+    $result = exec_query("SELECT * FROM `transactions` WHERE `customer_id` = '$id'");
+
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $row['dayNumber'] = ($row['savings_rate'] == null ? $row['loanDayNo'] : $row['savingsDayNo']);
+            $row['savings_rate'] = ($row['savings_rate'] == null ? '-' : $row['savings_rate']);
+            $row['loan_rate'] = ($row['loan_rate'] == null ? '-' : $row['loan_rate']);
+
+            $response.="<tr>
+            <td>".$row['transaction_date']."</td>
+            <td>".$row['month']."</td>
+            <td>".$row['savings_rate']."</td>
+            <td>".$row['loan_rate']."</td>
+            <td>".$row['dayNumber']."</td>
+            <td>".$row['amount']."</td>
+            <td>".$row['description']."</td>
+            <td>".$row['type']."</td>
+            <td>".$row['balance']."</td>
+            
+            </tr> ";
+        }
+    }
+    else {
+        $response .= "<td colspan='9'><h5><i>This Customer Has No Active Transactions</i></h5><td>";
+    }
+
+    exit($response);
+}
+
+else if (isset($_POST['customerID'])) {
+    $custNo = $_POST['customerID'];
+    $month = date('M',strtotime(date('Y-m-d')));
+
+    $result = exec_query("SELECT main_customers.loan_rate,main_customers.savings_rate,main_customers.balance,main_customers.loan_collected,SUM(transactions.savingsDayNo),SUM(transactions.loanDayNo) 
+    FROM `main_customers` 
+    INNER JOIN `transactions` 
+    ON main_customers.customer_id = transactions.customer_id
+    WHERE main_customers.customer_id = '$custNo' and transactions.month = '$month'");
+    
+    while ($rows = mysqli_fetch_assoc($result)) {
+        $response1 = $rows['savings_rate'];
+        $response2 = $rows['loan_rate'];
+        $response3 = $rows['SUM(transactions.savingsDayNo)'];
+        $response4 = $rows['SUM(transactions.loanDayNo)'];
+        $response5 = $rows['loan_collected'];
+        $response6 = $rows['balance'];
+    }
+
+    $response= array($response1,$response2,$response3,$response4,$response5,$response6);
+
+    echo json_encode($response); 
+}
 
 ?>
