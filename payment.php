@@ -86,7 +86,8 @@ if (isset($_POST['submitLoan'])) {
             <form method="get">
                 <div class="form-group">
                     <label for="custNo">Enter the Customer Number:</label>
-                    <input class="form-control" type="search" id="custNo" name="custNo" value="<?php printf($rows['card_no'])?>">
+                    <input class="form-control" type="search" id="custNo" name="custNo" value="<?php printf($rows['card_no']) ?>">
+                    <input type="hidden" value="<?php printf($rows['customer_id']) ?>" name="id" id="customerID">
                     
                     
                 </div>
@@ -98,49 +99,49 @@ if (isset($_POST['submitLoan'])) {
     <hr>
     <div class="row w3-padding-24">
         <div class="col-lg-4"></div>
-        <div class="col-lg-4"><button class="btn btn-danger">REVERSE LAST TRANSACTION</button></div>
+        <div class="col-lg-4"><button id="viewTransactions" class="btn btn-danger">View All Customer Transactions</button></div>
         <div class="col-lg-4"></div>
     </div>
     <div class="row w3-padding-24">
         <div class="col-lg-3">
             <h4 class="header-text">CUSTOMER DETAILS</h4>
             <hr>
-            <table class="table-bordered"  cellpadding="1">
+            <table class="table-bordered"  cellpadding="3">
                 <tr>
-                    <td class="selector">Card No</td> <td><?php printf($rows['card_no']) ?></td>
+                    <td class="selector">Card No</td> <td class = "selectorValue"><i class="w3-transparent"><?php printf($rows['card_no'])?></i></td>
                 </tr>
                 <tr>
-                    <td class="selector">Name</td> <td><?php printf($rows['customer_name']) ?></td>
+                    <td class="selector">Name</td> <td class = "selectorValue"><i class="w3-transparent"><?php printf($rows['customer_name'])?></i></td>
                 </tr>
                 <tr>
-                    <td class="selector">Phone Number</td> <td><?php printf($rows['customer_phone_num']) ?></td>
+                    <td class="selector">Phone Number</td> <td class = "selectorValue"><i class="w3-transparent"><?php printf($rows['customer_phone_num'])?></i></td>
                 </tr>
                 <tr>
-                    <td class="selector">Zone</td> <td><?php printf($rows['zone']) ?></td>
+                    <td class="selector">Zone</td> <td class = "selectorValue"><i class="w3-transparent"><?php printf($rows['zone'])?></i></td>
                 </tr>
                 <tr>
-                    <td class="selector">Date Joined</td> <td><?php printf($rows['reg_date']) ?></td>
+                    <td class="selector">Date Joined</td> <td class = "selectorValue"><i class="w3-transparent"><?php printf($rows['reg_date'])?></i></td>
                 </tr>
                 <tr>
-                    <td class="selector">Savings Rate</td> <td><?php printf($rows['savings_rate']) ?></td>
+                    <td class="selector">Savings Rate</td> <td class = "selectorValue ajaxSelector"><i class="w3-transparent">None</i></td>
                 </tr>
                 <tr>
-                    <td class="selector">Loan Rate</td> <td><?php printf($rows['loan_rate']) ?></td>
+                    <td class="selector">Loan Rate</td> <td class = "selectorValue ajaxSelector"><i class="w3-transparent">None</i></td>
                 </tr>
                 <tr>
-                    <td class="selector">Month</td> <td><?php echo date('M',strtotime(date('Y-m-d'))); ?></td>
+                    <td class="selector">Month</td> <td class = "selectorValue"><?php echo date('M',strtotime(date('Y-m-d'))); ?></td>
                 </tr>
                 <tr>
-                    <td class="selector">Daily Contributions This Month (Savings)</td> <td><?php echo getContributionNumber($rows['customer_id'],'savings')?></td>
+                    <td class="selector">Daily Contributions This Month (Savings)</td> <td class="selectorValue ajaxSelector"></td>
                 </tr>
                 <tr>
-                    <td class="selector">Daily Contributions This Month (Loan)</td> <td><?php echo getContributionNumber($rows['customer_id'],'loan')?></td>
+                    <td class="selector">Daily Contributions This Month (Loan)</td> <td class="selectorValue ajaxSelector"></td>
                 </tr>
                 <tr>
-                    <td class="selector">Loan Collected</td> <td><?php printf($rows['loan_collected']) ?></td>
+                    <td class="selector">Loan Collected</td> <td class = "selectorValue ajaxSelector"></td>
                 </tr>
                 <tr>
-                    <td class="selector">Current Balance</td> <td><?php echo getBalance($rows['customer_id']) ?></td>
+                    <td class="selector">Current Balance</td> <td class = "selectorValue ajaxSelector"></td>
                 </tr>
                 <tr>
                     <td colspan="2"><button data-toggle="modal" data-target="#editModal<?php printf($rows['card_no']) ?>" class="btn btn-primary">Edit Savings Rate/Loan Rate</button></td>
@@ -169,12 +170,12 @@ if (isset($_POST['submitLoan'])) {
                 <tr>
                     <td>
                         <label for="srate">Savings Rate</label>
-                        <input id="savings_rate" type="number" readonly class="form-control" value="<?php printf($rows['savings_rate']) ?>">
-                        <input name="savings_rate" type="hidden" value="<?php printf($rows['savings_rate'])?>">
+                        <input id="savings_rate" name="savings_rate" type="number" readonly class="form-control" value="">
+                        <input  type="hidden" value="">
                     </td>
                     <td>
                             <label for="lrate">Loan Rate</label>
-                            <input id="loan_rate" name="loan_rate" type="number" readonly class="form-control" value="<?php printf($rows['loan_rate']) ?>">
+                            <input id="loan_rate" name="loan_rate" type="number" readonly class="form-control" value="">
                     </td>
                 </tr>
                 <tr>
@@ -233,7 +234,7 @@ if (isset($_POST['submitLoan'])) {
                                 <input id="cardNo" type="hidden" value="<?php printf ($rows['card_no']) ?>">
                         </td>
                         <td>
-                                <button id="validator" name="validator" class="btn btn-primary form-control">Validate!</button><br><br>
+                                <button id="validator" name="validator" class="btn btn-primary form-control">Submit!</button><br><br>
                                 <button type="reset" id="reset" class="btn btn-danger form-control">Clear</button>
                             
                         </td>
@@ -253,6 +254,27 @@ if (isset($_POST['submitLoan'])) {
             </table>
         </div>
     </div>
+
+    <table class="table table-bordered table-hover" id="transactionsTable" style="display:none;">
+
+        <thead>
+            <tr>
+                <th>DATE OF TRANSACTION</th>
+                <th>MONTH OF TRANSACTION</th>
+                <th>SAVINGS RATE</th>
+                <th>LOAN RATE</th>
+                <th>NUMBER OF DAYS</th>
+                <th>AMOUNT</th>
+                <th>DESCRIPTION</th>
+                <th>TYPE</th>
+                <th>BALANCE</th>
+
+            </tr>
+        </thead>
+        <tbody id="transactions">
+
+        </tbody>
+    </table>
 </section>
 
 <!-- Edit Customer Modal -->
@@ -271,7 +293,7 @@ if (isset($_POST['submitLoan'])) {
                             <form method="post">
                             <div class='form-group required'>
                                 <label for="card_no">Card No</label>
-                                <input type="hidden" value="<?php printf($rows['customer_id']) ?>" name="id" id="customerID">
+                                <input type="hidden" value="<?php printf($rows['customer_id']) ?>" name="id">
                                 <input disabled type='text' name='card_no' value="<?php printf($rows['card_no']) ?>" class='form-control br-0' placeholder="Card Number">
                             </div>
                             <div class='form-group required'>
