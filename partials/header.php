@@ -66,11 +66,18 @@ $role = $_SESSION['role'];
             $( ".datepicker" ).datepicker({
                 dateFormat: "yy-mm-dd"
             });
+
+            
+            // getCustData();
             if ($('#custNo').val() == "") {
                 $('#validator').prop('disabled', true);
                 $('#reset').prop('disabled', true);
                 $('#guarrantor').prop('readonly', true);
                 $('.datepicker').prop('readonly', true);
+                $('#viewTransactions').prop('disabled', true);
+                $('.selectorValue').each(function() {
+                    $(this).html("<i class=\"w3-transparent\">None</i>");
+                })
             }
             else {
                 $.ajax({
@@ -93,6 +100,19 @@ $role = $_SESSION['role'];
                             $('#loanDayNo').prop('disabled', true);
                             $('#loan_submit').prop('disabled', true);
                         }
+                    }
+                })
+                $.ajax({
+                    url: 'getCustomerData.php',
+                    method: 'POST',
+                    data: {customerID: $('#customerID').val()},
+                    dataType: 'json',
+                    success: function(response) {
+                        let i = 0;
+                        $('.ajaxSelector').each(function() {
+                            $(this).html('<i class=\'w3-transparent\'>'+response[i]+'</i>')
+                            i++
+                        })
                     }
                 })
                 $('#savingsDayNo').change(function() {
@@ -153,6 +173,36 @@ $role = $_SESSION['role'];
                         }
                     })
                 })
+                $('#viewTransactions').click(function() {
+                    $.ajax({
+                        url: 'getCustomerData.php',
+                        method: 'POST',
+                        data: {id: $('#customerID').val()},
+                        success: function(response) {
+                            $('#transactionsTable').css('display','block')
+                            $('#transactions').append(response);
+                            // window.location.hash = '#transactionsTable';
+                        }
+                    })
+                })
+            }
+
+            function getCustData() {
+                $.ajax({
+                    url: 'getCustomerData.php',
+                    method: 'GET',
+                    // data: {custNo},
+                    dataType: 'json',
+                    success: function(response) {
+                        let i = 0;
+                        $('.selectorValue').each(function() {
+                            $(this).html(response[i]);
+                            i++;
+                        })
+                        $('#custNo').val(custNo)
+                        
+                    }
+                })
             }
                 
             
@@ -162,29 +212,7 @@ $role = $_SESSION['role'];
                 
             
   </script>
-  <script>
-    //Function to automatically derive the total savings or loan without refreshing the page
-  function getTotal(event) {
-      if (event.target.id = 'savings_submit') {
-        let srate = document.getElementById('savings_rate').value;
-        let dayNo = document.getElementById('savingsdayNo').value;
-
-        let total = srate * dayNo;
-
-        document.getElementById('savings_total').value = total;
-      }
-      else if (event.target.id = 'loan_submit') {
-        let lrate = document.getElementById('loan_rate').value;
-        let dayNo = document.getElementById('loandayNo').value;
-
-        let total = lrate * dayNo;
-
-        document.getElementById('loan_total').value = total;
-      }
-      
-  }
-  </script>
-    <title>Smart Contribution | <?php echo $title;?> </title>
+    <title>The PayDay App | <?php echo $title;?> </title>
 </head>
 
 <body>
