@@ -113,6 +113,8 @@ $role = $_SESSION['role'];
                             $(this).html('<i class=\'w3-transparent\'>'+response[i]+'</i>')
                             i++
                         })
+                        $('#savings_rate').val(response[0]);
+                        $('#loan_rate').val(response[1]);
                     }
                 })
                 $('#savingsDayNo').change(function() {
@@ -142,7 +144,7 @@ $role = $_SESSION['role'];
                     success: function(response) {
                             // let response = JSON.parse(responses)
                             $('#errorText').html(response[0]);
-                            if (response[0] == 'Customer Exists!') {
+                            if (response[0] == "Customer Exists! Click 'Submit'") {
                                 $('#errorText').css('color','green')
                                 $('#validator').prop('disabled',false)
                                 $('#validator').click(function() {
@@ -222,15 +224,12 @@ $role = $_SESSION['role'];
     <h2 class="w3-text-light-grey"><a href="index.php"><img src="lib/smart-icon.png" width="50" height="50"/><i> The PayDay App</i></a></h2>
     </div>
     <div class="w3-right w3-padding-16">
-        <a href="./?logout"><button class="btn btn-dark"><i class="fa fa-home"></i> Home</button></a>
+        <a href="./index.php"><button class="btn btn-dark"><i class="fa fa-home"></i> Home</button></a>
         <a href="./viewAllCustomers.php"><button type="button" class="btn btn-dark"><i class="fa fa-users"></i> Customers </button></a>
-        <button type="" class="btn btn-dark"><i class="fa fa-book"></i> Reports <i class="fa fa-angle-down"></i></button>
+        <a href="./transactions.php"><button type="" class="btn btn-dark"><i class="fa fa-book"></i> Reports</button></a>
         <a href="./payment.php"><button type="" class="btn btn-dark"><i class="fa fa-euro"></i> Perform Transaction</button></a>
         <?php if ($role == "SUPERADMIN") {echo "<a href=\"admin_section.php\"><button class=\"btn btn-dark\"><i class=\"fa fa-gear\"></i> Admins</button></a>"; } ?>
-        <a href=""><button type="" class="btn btn-dark"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?> <i class="fa fa-angle-down"></i></button></a>
-        <ul class="dropdown-menu">
-            <li><a href="./?logout"><i class="fa fa-sign-out"></i> Logout</a></li>
-        </ul>
+        <a href="./?logout"><button type="" class="btn btn-dark"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?> (Logout)</i></button></a>
     </div>
 </header>
 <hr>
