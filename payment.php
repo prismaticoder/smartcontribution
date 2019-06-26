@@ -216,7 +216,7 @@ if (isset($_POST['submitLoan'])) {
             <h4 class="header-text">LOANS</h4>
             <hr>
             <table id="loanDiv" class="my-table" border = "0" class="w3-padding-16" cellpadding="10">
-                <form method="post">
+                <form method="post" autocomplete="off">
                     <tr>
                         <td colspan="2">
                             <label for="date">Date of Transaction</label>
@@ -228,7 +228,7 @@ if (isset($_POST['submitLoan'])) {
                         <td>
                             
                                 <label for="guarrantor">Guarrantor</label>
-                                <input required id="guarrantor" name="guarrantor" type="text" class="form-control" placeholder="Search By Card Number">
+                                <input required id="guarrantor" name="guarrantor" type="text" class="form-control" placeholder="Card No e.g A1,B23...  ">
                                 <small id="errorText"></small>
                                 <input name="balance" type="hidden" value="<?php echo getBalance($rows['customer_id']) ?>">
                                 <input id="cardNo" type="hidden" value="<?php printf ($rows['card_no']) ?>">
