@@ -135,4 +135,37 @@ else if (isset($_POST['customerID'])) {
     echo json_encode($response); 
 }
 
+else if(isset($_GET['searchVal'])) {
+    $searchVal = $_GET['searchVal'];
+    $response = "";
+
+    $result = exec_query("SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,zone.zone 
+    FROM `main_customers` 
+    INNER JOIN `zone` 
+    ON main_customers.zone_id = zone.zone_id WHERE `customer_name` LIKE '%{$searchVal}%' or `card_no` LIKE '%{$searchVal}%'");
+
+    $resultCount = mysqli_num_rows($result);
+
+    $count = 1;
+    $response.="<tr><td colspan='7'><h5><i class='w3-transparent'>Found ".$resultCount." results matching the search string \"".$searchVal."\"</i></h5></td></tr>";
+    while($rows = mysqli_fetch_assoc($result)) {
+        $response.="
+            <tr>
+            <td>". $count ."</td>
+            <td>". $rows['card_no'] ."</td>
+            <td>" . $rows['customer_name'] . "</td>
+            <td>" . $rows['customer_phone_num'] . "</td>
+            <td>" . $rows['reg_date'] . "</td>
+            <td>" . $rows['zone'] . "</td>
+            <td style='text-align:center'> 
+            <a title='View Customer Details' href='./payment.php?custNo=". $rows['card_no'] ."'<i class='fa fa-external-link click-btn view'></i></a> 
+            <a title='Edit Customer Details' data-toggle=\"modal\" href=\"#editJobModal". $rows['card_no'] ."\"><i class='fa fa-pencil click-btn edit'></i></a> 
+            <i class='fa fa-close click-btn delete'></i> </td>
+            </tr>";
+        $count++;
+    }
+
+    exit($response);
+}
+
 ?>

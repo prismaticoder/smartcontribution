@@ -139,6 +139,18 @@ $( function() {
             })
         })
     }
+    $('#searchBtn').click(function() {
+        if ($('#searchForm').val() !== "") {
+            $.ajax({
+                url: 'getCustomerData.php',
+                method: 'GET',
+                data: {searchVal: $('#searchForm').val()},
+                success: function(response) {
+                    $('#tableBody').html(response);
+                }
+            })
+        }
+    })
 
     function getCustData() {
         $.ajax({
