@@ -82,7 +82,7 @@ else if(isset($_POST['custID'])) {
 else if (isset($_POST['id'])) {
     $id = $_POST['id'];
     $response = "";
-    $result = exec_query("SELECT * FROM `transactions` WHERE `customer_id` = '$id'");
+    $result = exec_query("SELECT * FROM `transactions` WHERE `customer_id` = '$id'  ORDER BY `transaction_date` DESC");
 
     if (mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
