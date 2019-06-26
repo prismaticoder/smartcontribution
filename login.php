@@ -49,5 +49,5 @@ if (isset($_POST['submit'])) {
                 </form>
             </div>
             <div class="col-md-3"></div>
-</body>
-</html>
+
+<?php require_once('partials/footer.php'); ?>
