@@ -21,7 +21,7 @@ if (isset($_POST['submit'])) {
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/w3.css">
     <link rel="stylesheet" href="css/myStyles.css">
-    <title>Smart Contribution | Admin Login </title>
+    <title>The PayDay App | Admin Login </title>
 </head>
 
 <body>
@@ -35,7 +35,7 @@ if (isset($_POST['submit'])) {
             <div class="col-md-6">
                 <form method="POST">
                     <div class="form-group well login-div w3-border-blue-grey">
-                        <h3><strong>SMART CONTRIBUTION ADMIN LOGIN</strong></h3>
+                        <h3><strong>THE PAYDAY APP - ADMIN LOGIN</strong></h3>
                         <br>
                         <label for="username">Username</label>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
