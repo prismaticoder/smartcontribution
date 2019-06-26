@@ -3,6 +3,21 @@ $( function() {
         dateFormat: "yy-mm-dd"
     });
 
+    $('#addUserSubmit').prop('disabled',true);
+    $('#conf_password').keyup(function() {
+        if ($(this).val() == $('#password').val()) {
+            $(this).css('border-color','green')
+            if ($('#username').val() !== "") {
+                $('#addUserSubmit').prop('disabled',false);
+            }
+        }
+        else {
+            $(this).css('border-color','red');
+            $('#addUserSubmit').prop('disabled',true); 
+        }
+    })
+
+
     
     // getCustData();
     if ($('#custNo').val() == "") {
@@ -68,7 +83,7 @@ $( function() {
             $('#loan_total').val(total);
         })
         // let custNo = $('#guarrantor').val()
-        $("#guarrantor").change(function() {
+        $("#guarrantor").keyup(function() {
             $.ajax({
             url: 'getCustomerData.php',
             method: 'POST',
