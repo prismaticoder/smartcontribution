@@ -162,7 +162,7 @@ if (isset($_POST['submitLoan'])) {
                     
                     <td colspan="2">
                         <label for="date">Date of Transaction</label>
-                        <input name="transaction_date" type="text" class="datepicker form-control" value="<?php echo date('Y-m-d')?>">
+                        <input name="transaction_date" type="text" class="datepicker form-control" placeholder='&#128197;' value="<?php echo date('Y-m-d')?>">
                         <input name="balance" type="hidden" value="<?php echo getBalance($rows['customer_id']) ?>">
                     </td>
                 </tr>
@@ -220,7 +220,7 @@ if (isset($_POST['submitLoan'])) {
                     <tr>
                         <td colspan="2">
                             <label for="date">Date of Transaction</label>
-                            <input name="transaction_date" type="text" class="datepicker form-control" value="<?php echo date('Y-m-d')?>">
+                            <input name="transaction_date" type="text" class="datepicker form-control" placeholder='&#128197;' value="<?php echo date('Y-m-d')?>">
                             <input type="hidden" name="id" value="<?php printf($rows['customer_id'])?>">
                         </td>
                     </tr>
