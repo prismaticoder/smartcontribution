@@ -260,6 +260,7 @@ if (isset($_POST['submitLoan'])) {
         <thead>
             <tr>
                 <th>DATE OF TRANSACTION</th>
+                <th>ID</th>
                 <th>MONTH OF TRANSACTION</th>
                 <th>SAVINGS RATE</th>
                 <th>LOAN RATE</th>
@@ -268,6 +269,7 @@ if (isset($_POST['submitLoan'])) {
                 <th>DESCRIPTION</th>
                 <th>TYPE</th>
                 <th>BALANCE</th>
+                <th colspan="2">REVERSAL</th>
 
             </tr>
         </thead>
