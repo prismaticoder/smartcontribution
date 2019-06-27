@@ -92,6 +92,7 @@ else if (isset($_POST['id'])) {
 
             $response.="<tr>
             <td>".$row['transaction_date']."</td>
+            <td>".$row['transaction_id']."</td>
             <td>".$row['month']."</td>
             <td>".$row['savings_rate']."</td>
             <td>".$row['loan_rate']."</td>
@@ -100,12 +101,13 @@ else if (isset($_POST['id'])) {
             <td>".$row['description']."</td>
             <td>".$row['type']."</td>
             <td>".$row['balance']."</td>
+            <td><button class=\"btn btn-primary reverseBtn\" id=\"".$row['transaction_id']."\">Reverse Transaction</td>
             
             </tr> ";
         }
     }
     else {
-        $response .= "<td colspan='9'><h5><i>This Customer Has No Active Transactions</i></h5><td>";
+        $response .= "<td colspan='11'><h5><i>This Customer Has No Active Transactions</i></h5><td>";
     }
 
     exit($response);
@@ -164,6 +166,99 @@ else if(isset($_GET['searchVal'])) {
             </tr>";
         $count++;
     }
+
+    exit($response);
+}
+
+else if (isset($_POST['cardForm'])) {
+    $searchVal = $_POST['cardForm'];
+
+    $response = "";
+
+    $result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE `card_no` LIKE '$searchVal' ORDER BY transactions.transaction_date DESC");
+
+    $count = 1;
+    while ($row = mysqli_fetch_assoc($result)) {
+        $row['dayNumber'] = ($row['savings_rate'] == null ? $row['loanDayNo'] : $row['savingsDayNo']);
+    
+        $row['savings_rate'] = ($row['savings_rate'] == null ? '-' : $row['savings_rate']);
+        $row['loan_rate'] = ($row['loan_rate'] == null ? '-' : $row['loan_rate']);
+        $response.="<tr>
+        <td>".$count."</td>
+        <td>".$row['card_no']."</td>
+        <td>".$row['customer_name']."</td>
+        <td>".$row['zone']."</td>
+        <td>".$row['transaction_id']."</td>
+        <td>".$row['transaction_date']."</td>
+        <td>".$row['month']."</td>
+        <td>".$row['savings_rate']."</td>
+        <td>".$row['loan_rate']."</td>
+        <td>".$row['dayNumber']."</td>
+        <td>".$row['amount']."</td>
+        <td>".$row['description']."</td>
+        <td>".$row['type']."</td>
+        <td>".$row['balance']."</td>
+        
+        </tr>    ";
+        $count++;
+    }
+
+    exit($response);
+}
+
+else if (isset($_POST['transactionID'])) {
+    $id = $_POST['transactionID'];
+    $transaction_date = date('Y-m-d');
+    $month = date('M',strtotime($transaction_date));
+    $year = date('Y',strtotime($transaction_date));
+    // $balance = $array['balance'] - $amount;
+
+    $result1 = exec_query("SELECT * FROM `transactions` WHERE `transaction_id` = '$id'");
+
+    while ($rows = mysqli_fetch_assoc($result1)) {
+        $amount = $rows['amount'];
+        $type = $rows['type'];
+        $description = $rows['description'];
+        $savingsDayNo = $rows['savingsDayNo'];
+        $loanDayNo = $rows['loanDayNo'];
+        $savings_rate = $rows['savings_rate'];
+        $loan_rate = $rows['loan_rate'];
+        $customer_id = $rows['customer_id'];
+    }
+
+    $newDesc = "Reversal of Transaction ID: ".$id;
+    $curBalance = getBalance($customer_id);
+
+    if ($type == 'CR') {
+        $balance = $curBalance - $amount;
+        if ($description == 'Daily Savings') {
+            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`savings_rate`,`savingsDayNo`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$savings_rate','-$savingsDayNo','$balance')");
+            if ($result2) {
+                $result3 = exec_query("UPDATE `main_customers` SET `balance` = `balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+                
+            }
+        }
+        else if ($description == 'Daily Loan Offset') {
+            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`loan_rate`,`loanDayNo`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$loan_rate','-$loanDayNo','$balance')");
+            if ($result2) {
+                $result3 = exec_query("UPDATE `main_customers` SET `balance` = `balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+            }
+        }
+        $response = "Successful Transacton Reversal!";
+    }
+    else if ($type == 'DR') {
+        $balance = $curBalance + $amount;
+        $result4 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','$amount','$newDesc', 'CR','$balance')");
+        if ($result4) {
+            $result5 = exec_query("UPDATE `main_customers` SET `balance` = `balance` + '$amount',`loan_collected` = `loan_collected` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+        }
+        $response = "Successful Transacton Reversal!";
+    }
+    else {
+        $response = "Error Processing Your Request";
+    }
+
+    
 
     exit($response);
 }

@@ -68,6 +68,19 @@ $( function() {
                 $('#loan_rate').val(response[1]);
             }
         })
+        $('#transactions').on('click','td>button.reverseBtn', function() {
+            if(confirm('Are you sure you want to reverse this transaction?')) {
+                $.ajax({
+                    url: 'getCustomerData.php',
+                    method: 'POST',
+                    data: {transactionID: this.id},
+                    success: function(response) {
+                        alert(response);
+                        this.prop('disabled',true)
+                    }
+                })
+            }
+        });
         $('#savingsDayNo').change(function() {
             let srate = $('#savings_rate').val();
             let dayNo = $(this).val();
@@ -151,6 +164,18 @@ $( function() {
             })
         }
     })
+    $('#cardNoBtn').click(function() {
+        $.ajax({
+            url: 'getCustomerData.php',
+            method: 'POST',
+            data: {cardForm: $('#cardForm').val()},
+            success: function(response) {
+                $("#transactionBody").html(response);
+            }
+        })
+    })
+
+    
 
     function getCustData() {
         $.ajax({
