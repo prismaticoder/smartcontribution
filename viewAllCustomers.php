@@ -83,10 +83,10 @@ if (isset($_POST['editSubmit'])) {
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="searchForm">Search A Customer By Name</label>
+                        <label for="searchForm">Search A Customer By Name/Card No</label>
                         <input type="search" class="form-control" id="searchForm" placeholder="Search By Card No, Name"/>
                     </div>
-                    <button class="btn btn-primary">Search! <i class="fa fa-search"></i></button>
+                    <button class="btn btn-primary" id="searchBtn">Search! <i class="fa fa-search"></i></button>
                     <!-- <button id="searchBtn" class="btn btn-danger" type="submit">Go!</button> -->
                 </div>
                 <div class="col-md-4">
@@ -118,8 +118,10 @@ if (isset($_POST['editSubmit'])) {
         </div>
         <hr>
         <table class="table table-bordered my-table">
-            <h3>ZONE : <?php echo $selectZone;?></h3>
-            <h3>CUSTOMERS : <?php echo $customer_count;?></h3>
+            <thead>
+                <tr><td colspan="4"><h3>ZONE : <?php echo $selectZone;?></h3></td><td colspan="3"><h3>CUSTOMERS : <?php echo $customer_count;?></h3></td></tr>
+            </thead>
+            
             <tr>
                 <th>S/N</th>
                 <th>CARD NUMBER</th>
@@ -129,6 +131,7 @@ if (isset($_POST['editSubmit'])) {
                 <th>ZONE</th>
                 <th>VIEW/EDIT/DELETE</th>
             </tr>
+            <tbody id="tableBody">
             <?php
         while ($customer_rows = mysqli_fetch_assoc($customer_result)) {
             echo 
@@ -140,7 +143,7 @@ if (isset($_POST['editSubmit'])) {
             <td>" . $customer_rows['reg_date'] . "</td>
             <td>" . $customer_rows['zone'] . "</td>
             <td style='text-align:center'> 
-            <a title='View Customer Details' href='/customer.php?custNo=". $customer_rows['card_no'] ."'<i class='fa fa-external-link click-btn view'></i></a> 
+            <a title='View Customer Details' href='./payment.php?custNo=". $customer_rows['card_no'] ."'<i class='fa fa-external-link click-btn view'></i></a> 
             <a title='Edit Customer Details' data-toggle=\"modal\" href=\"#editJobModal". $customer_rows['card_no'] ."\"><i class='fa fa-pencil click-btn edit'></i></a> 
             <i class='fa fa-close click-btn delete'></i> </td>
             </tr>
@@ -157,7 +160,7 @@ if (isset($_POST['editSubmit'])) {
                         </div>
                     <div class='modal-body'>
                         <div class='nrm-wrapper'>
-                        <form method='post'>
+                        <form method='post' autocomplete='off'>
                             <div class='form-group required'>
                                 <label for='card_no'>Card No</label>
                                 <input required type='text' name='card_no' value='". $customer_rows['card_no'] . "' class='form-control br-0'>
@@ -185,7 +188,7 @@ if (isset($_POST['editSubmit'])) {
                                 </div>
                             </div>
                             <div class='row'>
-                                <div class='col-lg-6'>
+                                <div class='col-lg-12'>
                                     <div class='form-group'>
                                         <label for='zone'>Zone</label>
                                         <select name='zone' id='' class='form-control br-0'>";
@@ -200,7 +203,7 @@ if (isset($_POST['editSubmit'])) {
                                        echo "</select>
                                     </div>
                                 </div>
-                                <div class='col-lg-6'>
+                                <div class='col-lg-12'>
                                     <div class='form-group'>
                                         <label for='reg_date'>Registration Date</label>
                                         <input name='reg_date' value='" . $customer_rows['reg_date'] . "' class='form-control br-0'>
@@ -222,6 +225,7 @@ if (isset($_POST['editSubmit'])) {
             $count++;
         }
             ?>
+        </tbody>
         </table>
 
         <div class='modal fade' id='addModal' tabindex='-1' role='dialog' aria-labelledby='editJobModalLabel' aria-hidden='true'>
@@ -236,7 +240,7 @@ if (isset($_POST['editSubmit'])) {
                         </div>
                     <div class='modal-body'>
                         <div class='nrm-wrapper'>
-                            <form method="post">
+                            <form method="post" autocomplete="off">
                             <div class='form-group required'>
                                 <label for="card_no">Card No</label>
                                 <input required type='text' name='card_no' class='form-control br-0' placeholder="Card Number">
@@ -264,7 +268,7 @@ if (isset($_POST['editSubmit'])) {
                                 </div>
                             </div>
                             <div class='row'>
-                                <div class='col-lg-6'>
+                                <div class='col-lg-12'>
                                     <div class='form-group'>
                                         <label for='zone'>Zone</label>
                                         <select name='zone' id='' class='form-control br-0'>
@@ -281,10 +285,10 @@ if (isset($_POST['editSubmit'])) {
                                         </select>
                                     </div>
                                 </div>
-                                <div class='col-lg-6'>
+                                <div class='col-lg-12'>
                                     <div class='form-group'>
                                         <label for='reg_date'>Registration Date</label>
-                                        <input type="text" class="datepicker form-control" name='reg_date' class='form-control br-0'>
+                                        <input type="text" class="datepicker form-control" name='reg_date' class='form-control br-0' placeholder='&#128197;'>
                                     </div>
                                 </div>
                             </div>
