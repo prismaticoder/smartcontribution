@@ -31,6 +31,9 @@ mark {
 header a:hover {
     color: #fff;
 }
+footer a, footer a:hover {
+    color: yellowgreen ;
+}
 .big-number {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 60px;
@@ -90,4 +93,7 @@ th:nth-child() {
 }
 .hidden {
     display: none;
+}
+button:disabled {
+    cursor: not-allowed;
 }
