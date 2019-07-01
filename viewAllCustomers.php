@@ -129,7 +129,7 @@ if (isset($_POST['editSubmit'])) {
                 <th>PHONE NUMBER</th>
                 <th>REGISTRATION DATE</th>
                 <th>ZONE</th>
-                <th>VIEW/EDIT/DELETE</th>
+                <th>VIEW/EDIT</th>
             </tr>
             <tbody id="tableBody">
             <?php
