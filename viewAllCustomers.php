@@ -145,7 +145,7 @@ if (isset($_POST['editSubmit'])) {
             <td style='text-align:center'> 
             <a title='View Customer Details' href='./payment.php?custNo=". $customer_rows['card_no'] ."'<i class='fa fa-external-link click-btn view'></i></a> 
             <a title='Edit Customer Details' data-toggle=\"modal\" href=\"#editJobModal". $customer_rows['card_no'] ."\"><i class='fa fa-pencil click-btn edit'></i></a> 
-            <i class='fa fa-close click-btn delete'></i> </td>
+            </td>
             </tr>
 
             <div class='modal fade' id='editJobModal". $customer_rows['card_no'] ."' tabindex='-1' role='dialog' aria-labelledby='editJobModalLabel' data-backdrop='false' aria-hidden='true'>
