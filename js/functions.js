@@ -37,7 +37,7 @@ $( function() {
                 data: {id: $('#customerID').val()},
                 success: function(response) {
                     $('#transactions').append(response);
-                    // window.location.hash = '#transactionsTable';
+                    
                 }
             })
         $.ajax({
@@ -150,6 +150,8 @@ $( function() {
         })
         $('#viewTransactions').click(function() {
             $('#transactionsTable').css('display','block');
+            window.location.hash = '#transactionsTable';
+            
         })
     }
     $('#searchBtn').click(function() {
