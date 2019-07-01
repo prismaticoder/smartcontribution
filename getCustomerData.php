@@ -100,10 +100,16 @@ else if (isset($_POST['id'])) {
             <td>".$row['amount']."</td>
             <td>".$row['description']."</td>
             <td>".$row['type']."</td>
-            <td>".$row['balance']."</td>
-            <td><button class=\"btn btn-primary reverseBtn\" id=\"".$row['transaction_id']."\">Reverse Transaction</td>
+            <td>".$row['balance']."</td>";
+            if ($row['isReversed'] !== 1) {
+                $response.="<td><button class=\"btn btn-primary reverseBtn\" id=\"".$row['transaction_id']."\">Reverse Transaction</td>";
+            }
+            else {
+                $response.="<td><button disabled class=\"btn btn-primary\" id=\"".$row['transaction_id']."\">Reverse Transaction</td>"; 
+            }
+
+            $response.=" </tr>";
             
-            </tr> ";
         }
     }
     else {
@@ -232,14 +238,14 @@ else if (isset($_POST['transactionID'])) {
     if ($type == 'CR') {
         $balance = $curBalance - $amount;
         if ($description == 'Daily Savings') {
-            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`savings_rate`,`savingsDayNo`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$savings_rate','-$savingsDayNo','$balance')");
+            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`savings_rate`,`savingsDayNo`,`balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$savings_rate','-$savingsDayNo','$balance',1)");
             if ($result2) {
                 $result3 = exec_query("UPDATE `main_customers` SET `balance` = `balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
                 
             }
         }
         else if ($description == 'Daily Loan Offset') {
-            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`loan_rate`,`loanDayNo`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$loan_rate','-$loanDayNo','$balance')");
+            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`loan_rate`,`loanDayNo`,`balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$loan_rate','-$loanDayNo','$balance',1)");
             if ($result2) {
                 $result3 = exec_query("UPDATE `main_customers` SET `balance` = `balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
             }
@@ -248,7 +254,7 @@ else if (isset($_POST['transactionID'])) {
     }
     else if ($type == 'DR') {
         $balance = $curBalance + $amount;
-        $result4 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','$amount','$newDesc', 'CR','$balance')");
+        $result4 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','$amount','$newDesc', 'CR','$balance',1)");
         if ($result4) {
             $result5 = exec_query("UPDATE `main_customers` SET `balance` = `balance` + '$amount',`loan_collected` = `loan_collected` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
         }
