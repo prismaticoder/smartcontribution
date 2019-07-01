@@ -31,6 +31,15 @@ $( function() {
         })
     }
     else {
+            $.ajax({
+                url: 'getCustomerData.php',
+                method: 'POST',
+                data: {id: $('#customerID').val()},
+                success: function(response) {
+                    $('#transactions').append(response);
+                    // window.location.hash = '#transactionsTable';
+                }
+            })
         $.ajax({
             url: 'getCustomerData.php',
             method: 'POST',
@@ -69,6 +78,7 @@ $( function() {
             }
         })
         $('#transactions').on('click','td>button.reverseBtn', function() {
+            $(this).prop('disabled', true);
             if(confirm('Are you sure you want to reverse this transaction?')) {
                 $.ajax({
                     url: 'getCustomerData.php',
@@ -76,7 +86,6 @@ $( function() {
                     data: {transactionID: this.id},
                     success: function(response) {
                         alert(response);
-                        this.prop('disabled',true)
                     }
                 })
             }
@@ -140,16 +149,7 @@ $( function() {
             })
         })
         $('#viewTransactions').click(function() {
-            $.ajax({
-                url: 'getCustomerData.php',
-                method: 'POST',
-                data: {id: $('#customerID').val()},
-                success: function(response) {
-                    $('#transactionsTable').css('display','block')
-                    $('#transactions').append(response);
-                    // window.location.hash = '#transactionsTable';
-                }
-            })
+            $('#transactionsTable').css('display','block');
         })
     }
     $('#searchBtn').click(function() {
