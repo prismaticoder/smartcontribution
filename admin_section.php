@@ -53,7 +53,7 @@ if (isset($_POST['addZoneSubmit'])) {
 <th>ROLE</th>
 <th>USERNAME</th>
 <th>PASSWORD</th>
-<th>EDIT/DELETE</th>
+<th>REMOVE USER</th>
 
 </tr>
 
@@ -69,8 +69,8 @@ $i = 1;
         <td>".$rows['username']."</td>
         <td>".$rows['password']."</td>
         <td>  
-            <a title='Edit User Details' data-toggle=\"modal\" href=\"#editUserModal". $rows['id'] ."\"><i class='fa fa-pencil click-btn edit'></i></a> 
-            <i class='fa fa-close click-btn delete'></i> </td>
+            <i title='Remove User \"".$rows['username']."\"' class='fa fa-close click-btn delete' style=\"text-align:center;\"></i> 
+        </td>
         </tr>    
         <div class='modal fade' id='editUserModal". $rows['id'] ."' tabindex='-1' role='dialog' aria-labelledby='editUserModalLabel' aria-hidden='true'>
         <div class='modal-dialog ' role='document'>
