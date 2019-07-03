@@ -85,7 +85,8 @@ $( function() {
                     method: 'POST',
                     data: {transactionID: this.id},
                     success: function(response) {
-                        alert(response);
+                        alert("Successful Transaction Reversal");
+                        $('#transactions').append(response);
                     }
                 })
             }
