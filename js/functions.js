@@ -3,6 +3,14 @@ $( function() {
         dateFormat: "yy-mm-dd"
     });
 
+    $("#dataTable").DataTable({
+        // serverSide: true,
+        dom: 'Bfrtip',
+        buttons: [
+            'csv','excel','print'
+        ],
+    })
+
     $('#addUserSubmit').prop('disabled',true);
     $('#conf_password').keyup(function() {
         if ($(this).val() == $('#password').val()) {
@@ -17,8 +25,50 @@ $( function() {
         }
     })
 
+    $('#balance_filter').click(function() {
+        let zone = $('#zone').val();
 
-    
+        $.ajax({
+            url: 'getCustomerData.php',
+            method: 'GET',
+            data: {
+                zone: zone,
+            },
+            success: function(response) {
+                $('#balanceBody').html(response);
+            }
+        })
+
+    }) 
+
+    $('#transaction_filter').click(function() {
+        let dateFrom = $('#dateFrom').val();
+        let dateTo = $('#dateTo').val();
+        let zone = $('#zone').val();
+        let transType = $("input[name='trans_type']:checked").val();
+
+        $.ajax({
+            url: 'getCustomerData.php',
+            method: 'GET',
+            data: {
+                dateFrom: dateFrom,
+                dateTo: dateTo,
+                zone: zone,
+                type: transType,
+            },
+            success: function(response) {
+                $('#transactionBody').html(response);
+                $('.dateFrom').html(dateFrom);
+                $('.dateTo').html(dateTo);
+                $('.zone').html(zone);
+                $('.type').html(transType);
+                // table.draw();
+                
+            }
+        })
+
+    })
+  
     // getCustData();
     if ($('#custNo').val() == "") {
         $('#validator').prop('disabled', true);
