@@ -6,8 +6,8 @@ $current_url = $_SERVER['REQUEST_URI'];
 $main_dir = 'smartcontribution';
 
 switch ($current_url) {
-    case '/'. $main_dir. '/createCustomer.php':
-        $title = 'Add a Customer';
+    case '/'. $main_dir. '/transactions.php':
+        $title = 'Reports - Transactions';
         break;
     case '/'. $main_dir. '/viewAllCustomers.php':
         $title = 'Customers';
@@ -15,11 +15,11 @@ switch ($current_url) {
     case '/'. $main_dir. '/payment.php':
         $title = 'Make a Payment';
         break;
-    case '/'. $main_dir. '/contribution/editContribution.php':
-        $title = 'Edit Contribution';
+    case '/'. $main_dir. '/admin_section.php':
+        $title = 'Admin Section';
         break;
-    case '/'. $main_dir. '/reports/report.php':
-        $title = 'Reports';
+    case '/'. $main_dir. '/balances.php':
+        $title = 'Reports - Balances';
         break;
     case '/'. $main_dir. '/login.php':
         $title = 'Admin Login';
@@ -57,10 +57,19 @@ $role = $_SESSION['role'];
     <link rel="stylesheet" href="css/myStyles.css">
     <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.css" />
     <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="css/buttons.dataTables.min.css">
     <script src="js/jquery-3.4.1.min.js"></script>
     <!-- <script type="text/javascript" src="js/angular.min.js"> -->
     <script src="js/jquery-ui.min.js"></script>
+    <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.dataTables.min.js"></script>
+    <script src="js/dataTables.buttons.min.js"></script>
+    <script src="js/buttons.flash.min.js"></script>
+    <script src="js/jszip.min.js"></script>
+    <script src="js/buttons.html5.min.js"></script>
+    <script src="js/buttons.print.min.js"></script>
     <script src="js/functions.js"></script>
     <title>The PayDay App | <?php echo $title;?> </title>
 </head>
@@ -74,7 +83,15 @@ $role = $_SESSION['role'];
     <div class="w3-right w3-padding-16">
         <a href="./index.php"><button class="btn btn-dark"><i class="fa fa-home"></i> Home</button></a>
         <a href="./viewAllCustomers.php"><button type="button" class="btn btn-dark"><i class="fa fa-users"></i> Customers </button></a>
-        <a href="./transactions.php"><button type="" class="btn btn-dark"><i class="fa fa-book"></i> Reports</button></a>
+        
+            <button type="" class="btn btn-dark dropdown-toggle" data-toggle="dropdown"><i class="fa fa-book"></i> Reports<span class="caret"></span></button>
+            <ul class="dropdown-menu btn-dark">
+                <li><a href="./transactions.php">Transactions</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a href="./balances.php">Balances</a></li>
+            </ul>
+        
+        
         <a href="./payment.php"><button type="" class="btn btn-dark"><i class="fa fa-euro"></i> Perform Transaction</button></a>
         <?php if ($role == "SUPERADMIN") {echo "<a href=\"admin_section.php\"><button class=\"btn btn-dark\"><i class=\"fa fa-gear\"></i> Admins</button></a>"; } ?>
         <a href="./?logout"><button type="" class="btn btn-dark"><i class=" fa fa-user"></i> <?php echo strtoupper($user) . ' ['.ucfirst(strtolower($role)).']'?> (Logout)</i></button></a>

@@ -1,7 +1,7 @@
 <?php 
 require_once('partials/header.php'); 
 
-$result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id ORDER BY transactions.transaction_date DESC");
+$result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id ORDER BY transactions.transaction_date DESC");
 
 $zone_result = exec_query("SELECT zone_id,zone FROM `zone` WHERE 1");
 $zones = [];
@@ -14,47 +14,46 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
     }
 };
 
-if (isset($_GET['filterBtn'])) {
-    $query = "SELECT * FROM table";
-
-$filtered_get = array_filter($_GET); // removes empty values from $_GET
-
-if (count($filtered_get)) { // not empty
-    $query .= " WHERE";
-
-    $keynames = array_keys($filtered_get); // make array of key names from $filtered_get
-
-    foreach($filtered_get as $key => $value)
-    {
-       $query .= " $keynames[$key] = '$value'";  // $filtered_get keyname = $filtered_get['keyname'] value
-       if (count($filtered_get) > 1 && (count($filtered_get) > $key)) { // more than one search filter, and not the last
-          $query .= " AND";
-       }
-    }
-}
-$query .= ";";
-}
-
 ?>
 
+<div class="container">
+    <h1 class="w3-center">ISEOLUWA AL-MONYASHAU VENTURES</h1>
+    <hr>
+    <h3 class="w3-center">REPORT FOR TRANSACTIONS TAKEN PLACE BETWEEN <span class="dateFrom">____</span> AND <span class="dateTo">____</span></h3>
+    <table class="table" border="1">
+        <tr>
+            <td><h4 class="w3-center">ZONE : <span class='zone'>ALL</span></h4></td>
+            <td><h4 class="w3-center">TYPE : <span class='type'>ALL TRANSACTIONS</span></h4></td>
+        </tr>
+    </table>
+    
+
+</div>
+<hr>
 <div class="container-fluid">
 <div class="row w3-padding-24">
                 <div class="col-md-3">
-                    <form method="get">
-                    <div class="form-group">
-                        <label for="cardForm">Card No</label>
-                        <input name="custNo" class="form-control" id="cardForm" placeholder="Search By Card No, Name"/>
-                    </div>
-                    <!-- <button id="searchBtn" class="btn btn-danger" type="submit">Go!</button> -->
-                    <div class="form-group">
+                    <div class="form-group required">
                         <label for="searchForm">DateRange (From)</label>
-                        <input name="dateFrom" class="form-control datepicker" placeholder='&#128197;'/>
+                        <input required value="<?php echo date('Y-m-d')?>" name="dateFrom" id="dateFrom" class="form-control datepicker" placeholder='&#128197;'/>
                     </div>
                 
-                    <div class="form-group">
+                    <div class="form-group required">
                         <label for="searchForm">DateRange (To)</label>
-                        <input name="dateTo" class="form-control datepicker" placeholder='&#128197;'/>
+                        <input required value="<?php echo date('Y-m-d')?>" name="dateTo" id="dateTo" class="form-control datepicker" placeholder='&#128197;'/>
                     </div>
+                <div class="form-group">
+                
+                <label for="trans_type">Choose Transaction Type</label>
+                <label>All Transactions</label>
+                <input class="w3-radio transType" checked type="radio" name="trans_type" value="">
+                <label>Daily Savings (CR)</label>
+                <input class="w3-radio transType" type="radio" name="trans_type" value="Daily Savings">
+                <label>Daily Loan Offset (CR)</label>
+                <input class="w3-radio transType" type="radio" name="trans_type" value="Daily Loan Offset">
+                <label>Loan Collection (DR)</label>
+                <input class="w3-radio transType" type="radio" name="trans_type" value="Loan Collection">
+                </div>
                 
                     <!-- <div class="form-group">
                         <label for="searchForm">Month</label>
@@ -81,7 +80,7 @@ $query .= ";";
                     </div>
                 </div> -->
                         <div class="form-group">
-                        <label for="zone">Filter by Zone</label>    
+                        <label for="zone">Select Zone</label>    
                             <select name='zone' id='zone' class='form-control'>
                                 <option selected value> All </option>
                                                     <?php
@@ -96,12 +95,11 @@ $query .= ";";
                                                     ?>
                                 </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Filter Table!</button>
-                    </form>
+                        <button id="transaction_filter" class="btn btn-primary">Filter Table!</button>
                 </div>
 
 <div class="col-md-9">
-<table class="table table-bordered table-responsive table-hover">
+<table class="table table-bordered table-responsive table-hover" id="dataTable">
 
 <thead>
 <tr>
@@ -137,26 +135,49 @@ while ($row = mysqli_fetch_assoc($result)) {
     $row['loan_rate'] = ($row['loan_rate'] == null ? '-' : $row['loan_rate']);
 
 
-
-    echo "
-    <tr>
-    <td>".$count."</td>
-    <td>".$row['card_no']."</td>
-    <td>".$row['customer_name']."</td>
-    <td>".$row['zone']."</td>
-    <td>".$row['transaction_id']."</td>
-    <td>".$row['transaction_date']."</td>
-    <td>".$row['month']."</td>
-    <td>".$row['savings_rate']."</td>
-    <td>".$row['loan_rate']."</td>
-    <td>".$row['dayNumber']."</td>
-    <td>".$row['amount']."</td>
-    <td>".$row['description']."</td>
-    <td>".$row['type']."</td>
-    <td>".$row['balance']."</td>
+    if ($row['isReversed'] != 1) {
+        echo "
+        <tr>
+        <td>".$count."</td>
+        <td>".$row['card_no']."</td>
+        <td>".$row['customer_name']."</td>
+        <td>".$row['zone']."</td>
+        <td>".$row['transaction_id']."</td>
+        <td>".$row['transaction_date']."</td>
+        <td>".$row['month']."</td>
+        <td>".$row['savings_rate']."</td>
+        <td>".$row['loan_rate']."</td>
+        <td>".$row['dayNumber']."</td>
+        <td>".$row['amount']."</td>
+        <td>".$row['description']."</td>
+        <td>".$row['type']."</td>
+        <td>".$row['balance']."</td>
+        
+        </tr>    
+        ";    
+    }
+    else {
+        echo "
+        <tr class='disabled w3-grey' title='This transaction has been reversed'>
+        <td>".$count."</td>
+        <td>".$row['card_no']."</td>
+        <td>".$row['customer_name']."</td>
+        <td>".$row['zone']."</td>
+        <td>".$row['transaction_id']."</td>
+        <td>".$row['transaction_date']."</td>
+        <td>".$row['month']."</td>
+        <td>".$row['savings_rate']."</td>
+        <td>".$row['loan_rate']."</td>
+        <td>".$row['dayNumber']."</td>
+        <td>".$row['amount']."</td>
+        <td>".$row['description']."</td>
+        <td>".$row['type']."</td>
+        <td>".$row['balance']."</td>
+        
+        </tr>    
+        ";    
+    }
     
-    </tr>    
-    ";    
     $count++;
 }
 
@@ -165,6 +186,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 </table>
 </div>
 </div>
+</div>
 
 
-<?php require_once('partials/footer.php')?>;
+<?php require_once('partials/footer.php')?>

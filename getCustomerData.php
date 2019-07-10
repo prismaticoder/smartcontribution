@@ -294,4 +294,150 @@ else if (isset($_POST['transactionID'])) {
     exit($response);
 }
 
+else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zone']) and isset($_GET['type'])) {
+    $dateFrom = $_GET['dateFrom'];
+    $dateTo = $_GET['dateTo'];
+    $zone = $_GET['zone'];
+    $type = $_GET['type'];
+    $response = "";
+
+    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date >= '$dateFrom' AND transactions.transaction_date <= '$dateTo' ";
+    
+    if ($zone != "") {
+        $query.="AND zone.zone = '$zone' ";
+    }
+
+    if ($type != "") {
+        $query.="AND transactions.description = '$type' ";
+    }
+
+    $query.="ORDER BY `transactions`.`transaction_date` DESC";
+
+    $result = exec_query($query);
+
+    if (mysqli_num_rows($result) == 0) {
+        $response.="<tr><td colspan=\"14\"><h4><i>No results were found for the category selected!</i></h4></td></tr>";
+    }
+
+    else {
+
+        $count = 1;
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $row['dayNumber'] = ($row['savings_rate'] == null ? $row['loanDayNo'] : $row['savingsDayNo']);
+        
+            $row['savings_rate'] = ($row['savings_rate'] == null ? '-' : $row['savings_rate']);
+            $row['loan_rate'] = ($row['loan_rate'] == null ? '-' : $row['loan_rate']);
+
+
+
+            if ($row['isReversed'] != 1) {
+                $response.="
+                <tr>
+                <td>".$count."</td>
+                <td>".$row['card_no']."</td>
+                <td>".$row['customer_name']."</td>
+                <td>".$row['zone']."</td>
+                <td>".$row['transaction_id']."</td>
+                <td>".$row['transaction_date']."</td>
+                <td>".$row['month']."</td>
+                <td>".$row['savings_rate']."</td>
+                <td>".$row['loan_rate']."</td>
+                <td>".$row['dayNumber']."</td>
+                <td>".$row['amount']."</td>
+                <td>".$row['description']."</td>
+                <td>".$row['type']."</td>
+                <td>".$row['balance']."</td>
+                
+                </tr>    
+                ";    
+            }
+            else {
+                $response.="
+                <tr class='disabled w3-grey' title='This transaction has been reversed'>
+                <td>".$count."</td>
+                <td>".$row['card_no']."</td>
+                <td>".$row['customer_name']."</td>
+                <td>".$row['zone']."</td>
+                <td>".$row['transaction_id']."</td>
+                <td>".$row['transaction_date']."</td>
+                <td>".$row['month']."</td>
+                <td>".$row['savings_rate']."</td>
+                <td>".$row['loan_rate']."</td>
+                <td>".$row['dayNumber']."</td>
+                <td>".$row['amount']."</td>
+                <td>".$row['description']."</td>
+                <td>".$row['type']."</td>
+                <td>".$row['balance']."</td>
+                
+                </tr>    
+                ";    
+            }   
+            $count++;
+        }
+    }
+
+    exit($response);
+
+}
+
+else if (isset($_GET['zone'])) {
+    $zone = $_GET['zone'];
+    $response = "";
+    $result = exec_query(
+        "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.loan_collected,main_customers.balance,zone.zone 
+        FROM `main_customers` 
+        INNER JOIN `zone` 
+        ON main_customers.zone_id = zone.zone_id
+        WHERE zone.zone = '$zone'
+        ORDER BY main_customers.customer_name ASC"
+        );
+
+    if (mysqli_num_rows($result) == 0) {
+            $response.="<tr><td colspan=\"9\"><h4><i>No results were found for the category selected!</i></h4></td></tr>";
+        }
+
+    else {
+        $count = 1;
+        while($row = mysqli_fetch_assoc($result)) {
+            $response.="
+            <tr>
+            <td>".$count."</td>
+            <td>".$row['card_no']."</td>
+            <td>".$row['customer_name']."</td>
+            <td>".$row['zone']."</td>
+            <td>".$row['reg_date']."</td>
+            <td>".$row['savings_rate']."</td>
+            <td>".$row['loan_rate']."</td>
+            <td>".-$row['loan_collected']."</td>
+            <td>".$row['balance']."</td>
+            
+            </tr>    
+            ";
+        $count++;
+    }
+    }
+
+    $count = 1;
+    while($row = mysqli_fetch_assoc($result)) {
+        $response.="
+            <tr>
+            <td>".$count."</td>
+            <td>".$row['card_no']."</td>
+            <td>".$row['customer_name']."</td>
+            <td>".$row['zone']."</td>
+            <td>".$row['reg_date']."</td>
+            <td>".$row['savings_rate']."</td>
+            <td>".$row['loan_rate']."</td>
+            <td>".-$row['loan_collected']."</td>
+            <td>".$row['balance']."</td>
+            
+            </tr>    
+            ";
+        $count++;
+    }
+
+    exit($response);
+}
+
 ?>

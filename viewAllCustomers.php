@@ -8,7 +8,8 @@ if (!isset($_GET['zone']) or $_GET['zone'] == '') {
         "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,zone.zone 
         FROM `main_customers` 
         INNER JOIN `zone` 
-        ON main_customers.zone_id = zone.zone_id"
+        ON main_customers.zone_id = zone.zone_id
+        ORDER BY main_customers.customer_name ASC"
         );
     $selectZone = 'ALL ZONES';
     $customer_count = mysqli_num_rows($customer_result);
@@ -143,7 +144,7 @@ if (isset($_POST['editSubmit'])) {
             <td>" . $customer_rows['reg_date'] . "</td>
             <td>" . $customer_rows['zone'] . "</td>
             <td style='text-align:center'> 
-            <a title='View Customer Details' href='./payment.php?custNo=". $customer_rows['card_no'] ."'<i class='fa fa-external-link click-btn view'></i></a> 
+            <a title='View Customer Details' target='blank_' href='./payment.php?custNo=". $customer_rows['card_no'] ."'<i class='fa fa-external-link click-btn view'></i></a> 
             <a title='Edit Customer Details' data-toggle=\"modal\" href=\"#editJobModal". $customer_rows['card_no'] ."\"><i class='fa fa-pencil click-btn edit'></i></a> 
             </td>
             </tr>
