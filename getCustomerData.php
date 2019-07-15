@@ -299,7 +299,7 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
     $dateTo = $_GET['dateTo'];
     $zone = $_GET['zone'];
     $type = $_GET['type'];
-    $response = "";
+    $response = [];
 
     $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date >= '$dateFrom' AND transactions.transaction_date <= '$dateTo' ";
     
@@ -316,12 +316,12 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
     $result = exec_query($query);
 
     if (mysqli_num_rows($result) == 0) {
-        $response.="<tr><td colspan=\"14\"><h4><i>No results were found for the category selected!</i></h4></td></tr>";
+        $response[0]="<tr><td colspan=\"14\"><h4><i>No results were found for the category selected!</i></h4></td></tr>";
     }
 
     else {
 
-        $count = 1;
+        $count = 0;
 
         while ($row = mysqli_fetch_assoc($result)) {
             $row['dayNumber'] = ($row['savings_rate'] == null ? $row['loanDayNo'] : $row['savingsDayNo']);
@@ -332,52 +332,52 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
 
 
             if ($row['isReversed'] != 1) {
-                $response.="
+                $response[$count]=["
                 <tr>
-                <td>".$count."</td>
-                <td>".$row['card_no']."</td>
-                <td>".$row['customer_name']."</td>
-                <td>".$row['zone']."</td>
-                <td>".$row['transaction_id']."</td>
-                <td>".$row['transaction_date']."</td>
-                <td>".$row['month']."</td>
-                <td>".$row['savings_rate']."</td>
-                <td>".$row['loan_rate']."</td>
-                <td>".$row['dayNumber']."</td>
-                <td>".$row['amount']."</td>
-                <td>".$row['description']."</td>
-                <td>".$row['type']."</td>
+                <td>".$count."</td>","
+                <td>".$row['card_no']."</td>","
+                <td>".$row['customer_name']."</td>","
+                <td>".$row['zone']."</td>","
+                <td>".$row['transaction_id']."</td>","
+                <td>".$row['transaction_date']."</td>","
+                <td>".$row['month']."</td>","
+                <td>".$row['savings_rate']."</td>","
+                <td>".$row['loan_rate']."</td>","
+                <td>".$row['dayNumber']."</td>","
+                <td>".$row['amount']."</td>","
+                <td>".$row['description']."</td>","
+                <td>".$row['type']."</td>","
                 <td>".$row['balance']."</td>
                 
                 </tr>    
-                ";    
+                "];    
             }
             else {
-                $response.="
+                $response[$count]=["
                 <tr class='disabled w3-grey' title='This transaction has been reversed'>
-                <td>".$count."</td>
-                <td>".$row['card_no']."</td>
-                <td>".$row['customer_name']."</td>
-                <td>".$row['zone']."</td>
-                <td>".$row['transaction_id']."</td>
-                <td>".$row['transaction_date']."</td>
-                <td>".$row['month']."</td>
-                <td>".$row['savings_rate']."</td>
-                <td>".$row['loan_rate']."</td>
-                <td>".$row['dayNumber']."</td>
-                <td>".$row['amount']."</td>
-                <td>".$row['description']."</td>
-                <td>".$row['type']."</td>
+                <td>".$count."</td>","
+                <td>".$row['card_no']."</td>","
+                <td>".$row['customer_name']."</td>","
+                <td>".$row['zone']."</td>","
+                <td>".$row['transaction_id']."</td>","
+                <td>".$row['transaction_date']."</td>","
+                <td>".$row['month']."</td>","
+                <td>".$row['savings_rate']."</td>","
+                <td>".$row['loan_rate']."</td>","
+                <td>".$row['dayNumber']."</td>","
+                <td>".$row['amount']."</td>","
+                <td>".$row['description']."</td>","
+                <td>".$row['type']."</td>","
                 <td>".$row['balance']."</td>
                 
                 </tr>    
-                ";    
+                "];    
             }   
             $count++;
         }
     }
 
-    exit($response);
+    echo json_encode($response);
 
 }
 

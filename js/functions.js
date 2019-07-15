@@ -3,7 +3,8 @@ $( function() {
         dateFormat: "yy-mm-dd"
     });
 
-    $("#dataTable").DataTable({
+    var myTableau = $("#dataTable").DataTable({
+        processing: true,
         // serverSide: true,
         dom: 'Bfrtip',
         buttons: [
@@ -56,13 +57,14 @@ $( function() {
                 zone: zone,
                 type: transType,
             },
+            dataType: 'json',
             success: function(response) {
-                $('#transactionBody').html(response);
+                myTableau.clear().rows.add(response).draw();
                 $('.dateFrom').html(dateFrom);
                 $('.dateTo').html(dateTo);
                 $('.zone').html(zone);
                 $('.type').html(transType);
-                // table.draw();
+               
                 
             }
         })
