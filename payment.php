@@ -6,7 +6,7 @@ if (!isset($_GET['custNo']) or $_GET['custNo'] == '') {
 }
 else {
     $card_no = $_GET['custNo'];
-    $query = ("SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.balance,main_customers.loan_collected,zone.zone 
+    $query = ("SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.customer_phone_num,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.savings_balance,main_customers.loan_balance,zone.zone 
     FROM `main_customers` 
     INNER JOIN `zone` 
     ON main_customers.zone_id = zone.zone_id
@@ -138,10 +138,10 @@ if (isset($_POST['submitLoan'])) {
                     <td class="selector">Daily Contributions This Month (Loan)</td> <td class="selectorValue ajaxSelector"></td>
                 </tr>
                 <tr>
-                    <td class="selector">Loan Collected</td> <td class = "selectorValue ajaxSelector"></td>
+                    <td class="selector">Current Loan Balance</td> <td class = "selectorValue ajaxSelector"></td>
                 </tr>
                 <tr>
-                    <td class="selector">Current Balance</td> <td class = "selectorValue ajaxSelector"></td>
+                    <td class="selector">Current Savings Balance</td> <td class = "selectorValue ajaxSelector"></td>
                 </tr>
                 <tr>
                     <td colspan="2"><button data-toggle="modal" data-target="#editModal<?php printf($rows['card_no']) ?>" class="btn btn-primary">Edit Savings Rate/Loan Rate</button></td>
@@ -163,7 +163,7 @@ if (isset($_POST['submitLoan'])) {
                     <td colspan="2">
                         <label for="date">Date of Transaction</label>
                         <input name="transaction_date" type="text" class="datepicker form-control" placeholder='&#128197;' value="<?php echo date('Y-m-d')?>">
-                        <input name="balance" type="hidden" value="<?php echo getBalance($rows['customer_id']) ?>">
+                        <input name="balance" type="hidden" value="<?php echo getSavingsBalance($rows['customer_id']) ?>">
                     </td>
                 </tr>
             
@@ -230,7 +230,7 @@ if (isset($_POST['submitLoan'])) {
                                 <label for="guarrantor">Guarrantor</label>
                                 <input required id="guarrantor" name="guarrantor" type="text" class="form-control" placeholder="Card No e.g A1,B23...  ">
                                 <small id="errorText"></small>
-                                <input name="balance" type="hidden" value="<?php echo getBalance($rows['customer_id']) ?>">
+                                <input name="balance" type="hidden" value="<?php echo getSavingsBalance($rows['customer_id']) ?>">
                                 <input id="cardNo" type="hidden" value="<?php printf ($rows['card_no']) ?>">
                         </td>
                         <td>
