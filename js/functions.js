@@ -5,6 +5,17 @@ $( function() {
 
     var myTableau = $("#dataTable").DataTable({
         processing: true,
+        scrollX: false,
+        // serverSide: true,
+        dom: 'Bfrtip',
+        buttons: [
+            'csv','excel','print'
+        ],
+    })
+
+    var myTableau2 = $("#dataTable2").DataTable({
+        processing: true,
+        scrollX: false,
         // serverSide: true,
         dom: 'Bfrtip',
         buttons: [
@@ -35,8 +46,9 @@ $( function() {
             data: {
                 zone: zone,
             },
+            dataType: 'json',
             success: function(response) {
-                $('#balanceBody').html(response);
+                myTableau2.clear().rows.add(response).draw();
             }
         })
 

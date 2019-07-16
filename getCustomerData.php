@@ -123,7 +123,7 @@ else if (isset($_POST['customerID'])) {
     $custNo = $_POST['customerID'];
     $month = date('M',strtotime(date('Y-m-d')));
 
-    $result = exec_query("SELECT main_customers.loan_rate,main_customers.savings_rate,main_customers.balance,main_customers.loan_collected,SUM(transactions.savingsDayNo),SUM(transactions.loanDayNo) 
+    $result = exec_query("SELECT main_customers.loan_rate,main_customers.savings_rate,main_customers.savings_balance,main_customers.loan_balance,SUM(transactions.savingsDayNo),SUM(transactions.loanDayNo) 
     FROM `main_customers` 
     INNER JOIN `transactions` 
     ON main_customers.customer_id = transactions.customer_id
@@ -134,8 +134,8 @@ else if (isset($_POST['customerID'])) {
         $response2 = $rows['loan_rate'];
         $response3 = $rows['SUM(transactions.savingsDayNo)'];
         $response4 = $rows['SUM(transactions.loanDayNo)'];
-        $response5 = $rows['loan_collected'];
-        $response6 = $rows['balance'];
+        $response5 = $rows['loan_balance'];
+        $response6 = $rows['savings_balance'];
     }
 
     $response= array($response1,$response2,$response3,$response4,$response5,$response6);
@@ -316,12 +316,12 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
     $result = exec_query($query);
 
     if (mysqli_num_rows($result) == 0) {
-        $response[0]="<tr><td colspan=\"14\"><h4><i>No results were found for the category selected!</i></h4></td></tr>";
+        $response[0]=["<tr><h4><i>No results were found for the category selected!</i></h4></tr>"];
     }
 
     else {
 
-        $count = 0;
+        $count = 1;
 
         while ($row = mysqli_fetch_assoc($result)) {
             $row['dayNumber'] = ($row['savings_rate'] == null ? $row['loanDayNo'] : $row['savingsDayNo']);
@@ -332,7 +332,7 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
 
 
             if ($row['isReversed'] != 1) {
-                $response[$count]=["
+                $response[]=["
                 <tr>
                 <td>".$count."</td>","
                 <td>".$row['card_no']."</td>","
@@ -353,13 +353,13 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
                 "];    
             }
             else {
-                $response[$count]=["
-                <tr class='disabled w3-grey' title='This transaction has been reversed'>
+                $response[]=["
+                <tr class=\"disabled w3-grey\" title=\"This transaction has been reversed\">
                 <td>".$count."</td>","
                 <td>".$row['card_no']."</td>","
                 <td>".$row['customer_name']."</td>","
                 <td>".$row['zone']."</td>","
-                <td>".$row['transaction_id']."</td>","
+                <td>".$row['transaction_id']." (Reversed!)</td>","
                 <td>".$row['transaction_date']."</td>","
                 <td>".$row['month']."</td>","
                 <td>".$row['savings_rate']."</td>","
@@ -383,9 +383,9 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
 
 else if (isset($_GET['zone'])) {
     $zone = $_GET['zone'];
-    $response = "";
+    $response = [];
     $result = exec_query(
-        "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.loan_collected,main_customers.balance,zone.zone 
+        "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.loan_balance,main_customers.savings_balance,zone.zone 
         FROM `main_customers` 
         INNER JOIN `zone` 
         ON main_customers.zone_id = zone.zone_id
@@ -394,50 +394,50 @@ else if (isset($_GET['zone'])) {
         );
 
     if (mysqli_num_rows($result) == 0) {
-            $response.="<tr><td colspan=\"9\"><h4><i>No results were found for the category selected!</i></h4></td></tr>";
+            $response[]="<tr><td colspan=\"9\"><h4><i>No results were found for the category selected!</i></h4></td></tr>";
         }
 
     else {
         $count = 1;
         while($row = mysqli_fetch_assoc($result)) {
-            $response.="
+            $response[]=["
             <tr>
-            <td>".$count."</td>
-            <td>".$row['card_no']."</td>
-            <td>".$row['customer_name']."</td>
-            <td>".$row['zone']."</td>
-            <td>".$row['reg_date']."</td>
-            <td>".$row['savings_rate']."</td>
-            <td>".$row['loan_rate']."</td>
-            <td>".-$row['loan_collected']."</td>
-            <td>".$row['balance']."</td>
+            <td>".$count."</td>","
+            <td>".$row['card_no']."</td>","
+            <td>".$row['customer_name']."</td>","
+            <td>".$row['zone']."</td>","
+            <td>".$row['reg_date']."</td>","
+            <td>".$row['savings_rate']."</td>","
+            <td>".$row['loan_rate']."</td>","
+            <td>".-$row['loan_balance']."</td>","
+            <td>".$row['savings_balance']."</td>
             
             </tr>    
-            ";
+            "];
         $count++;
     }
     }
 
-    $count = 1;
-    while($row = mysqli_fetch_assoc($result)) {
-        $response.="
-            <tr>
-            <td>".$count."</td>
-            <td>".$row['card_no']."</td>
-            <td>".$row['customer_name']."</td>
-            <td>".$row['zone']."</td>
-            <td>".$row['reg_date']."</td>
-            <td>".$row['savings_rate']."</td>
-            <td>".$row['loan_rate']."</td>
-            <td>".-$row['loan_collected']."</td>
-            <td>".$row['balance']."</td>
+    // $count = 1;
+    // while($row = mysqli_fetch_assoc($result)) {
+    //     $response.="
+    //         <tr>
+    //         <td>".$count."</td>
+    //         <td>".$row['card_no']."</td>
+    //         <td>".$row['customer_name']."</td>
+    //         <td>".$row['zone']."</td>
+    //         <td>".$row['reg_date']."</td>
+    //         <td>".$row['savings_rate']."</td>
+    //         <td>".$row['loan_rate']."</td>
+    //         <td>".-$row['loan_balance']."</td>
+    //         <td>".$row['savings_balance']."</td>
             
-            </tr>    
-            ";
-        $count++;
-    }
+    //         </tr>    
+    //         ";
+    //     $count++;
+    // }
 
-    exit($response);
+    echo json_encode($response);
 }
 
 ?>

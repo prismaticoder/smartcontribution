@@ -4,7 +4,7 @@ require_once('partials/header.php');
 //Filters are Zone and Month. Simple!
 
 $result = exec_query(
-    "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.loan_collected,main_customers.balance,zone.zone 
+    "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.loan_balance,main_customers.savings_balance,zone.zone 
     FROM `main_customers` 
     INNER JOIN `zone` 
     ON main_customers.zone_id = zone.zone_id
@@ -63,7 +63,7 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                 <button id="balance_filter" class="btn btn-primary">Filter Table!</button>
         </div>
         <div class="col-md-9">
-            <table class="table table-bordered table-responsive table-hover" id="dataTable">
+            <table class="table table-bordered table-responsive table-hover" id="dataTable2">
 
                 <thead>
                 <tr>
@@ -94,8 +94,8 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                             <td>".$row['reg_date']."</td>
                             <td>".$row['savings_rate']."</td>
                             <td>".$row['loan_rate']."</td>
-                            <td>".-$row['loan_collected']."</td>
-                            <td>".$row['balance']."</td>
+                            <td>".-$row['loan_balance']."</td>
+                            <td>".$row['savings_balance']."</td>
                             
                             </tr>    
                             ";

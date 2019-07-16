@@ -237,7 +237,7 @@ function exec_contribution($array,$action) {
             $savings_rate = $array['savings_rate'];
             $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`savings_rate`,`savingsDayNo`,`amount`,`description`,`type`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','$savings_rate','$dayNo','$amount','Daily Savings','CR','$balance')");
             if ($result1) {
-                $result2 = exec_query("UPDATE `main_customers` SET `balance` = `balance` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+                $result2 = exec_query("UPDATE `main_customers` SET `savings_balance` = `savings_balance` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
                 echo "<script>alert('Contribution Added Successfully!');</script>";
 
             }
@@ -258,7 +258,7 @@ function exec_contribution($array,$action) {
             $loan_rate = $array['loan_rate'];
             $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`loan_rate`,`loanDayNo`,`amount`,`description`,`type`,`balance`) VALUES ('$customer_id','$transaction_date','$month','$year','$loan_rate','$dayNo','$amount','Daily Loan Offset','CR','$balance')");
             if ($result1) {
-                $result2 = exec_query("UPDATE `main_customers` SET `balance` = `balance` + '$amount', `loan_collected` = `loan_collected` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+                $result2 = exec_query("UPDATE `main_customers` SET `loan_balance` = `loan_balance` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
                 echo "<script>alert('Contribution Added Successfully!');</script>";
 
             }
@@ -284,7 +284,7 @@ function exec_loan($array) {
 
         $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`balance`,`author`) VALUES ('$customer_id','$transaction_date','$month','$year','$amount','Loan Collection', 'DR','$balance', '$author')");
         if ($result1) {
-            $result2 = exec_query("UPDATE `main_customers` SET `balance` = `balance` - '$amount',`loan_collected` = `loan_collected` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+            $result2 = exec_query("UPDATE `main_customers` SET `loan_balance` = `loan_balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
             echo "<script>alert('Successful Loan Collection!');</script>";
 
         }
@@ -297,19 +297,38 @@ function exec_loan($array) {
 
 }
 
-function getBalance($id) {
+function getSavingsBalance($id) {
     if ($id == "") {
         $balance = null;
     }
     else {
-        $result = exec_query("SELECT `balance` FROM `main_customers` WHERE `customer_id` = '$id'");
+        $result = exec_query("SELECT `savings_balance` FROM `main_customers` WHERE `customer_id` = '$id'");
 
         while ($row = mysqli_fetch_assoc($result)) {
-            if ($row['balance'] == null) {
+            if ($row['savings_balance'] == null) {
                 $balance = 0;
             }
             else {
-                $balance = $row['balance'];
+                $balance = $row['savings_balance'];
+            }
+        }
+    }
+    return $balance;
+}
+
+function getLoanBalance($id) {
+    if ($id == "") {
+        $balance = null;
+    }
+    else {
+        $result = exec_query("SELECT `loan_balance` FROM `main_customers` WHERE `customer_id` = '$id'");
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            if ($row['loan_balance'] == null) {
+                $balance = 0;
+            }
+            else {
+                $balance = $row['loan_balance'];
             }
         }
     }

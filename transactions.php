@@ -117,7 +117,7 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
 <th>AMOUNT</th>
 <th>DESC</th>
 <th>TYPE</th>
-<th>BALANCE</th>
+<th>SAVINGS BALANCE</th>
 
 </tr>
 </thead>
@@ -163,7 +163,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         <td>".$row['card_no']."</td>
         <td>".$row['customer_name']."</td>
         <td>".$row['zone']."</td>
-        <td>".$row['transaction_id']."</td>
+        <td>".$row['transaction_id']." (Reversed!)</td>
         <td>".$row['transaction_date']."</td>
         <td>".$row['month']."</td>
         <td>".$row['savings_rate']."</td>
