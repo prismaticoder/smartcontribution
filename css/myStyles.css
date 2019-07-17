@@ -101,3 +101,14 @@ button:disabled {
 .disabled {
     cursor: not-allowed;
 }
+.activeBar {
+   background-color: #4056a1; 
+}
+.trTable td:hover {
+    cursor: pointer;
+    background-color: #4056a1;
+}
+.trTable td a:hover {
+    text-decoration: none;
+    color: black;
+}
