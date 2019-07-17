@@ -10,6 +10,12 @@ $result = exec_query(
     ON main_customers.zone_id = zone.zone_id
     ORDER BY main_customers.customer_name ASC"
     );
+$sumResult = exec_query("SELECT SUM(savings_balance),SUM(loan_balance) FROM `main_customers`");
+
+while ($sumRow = mysqli_fetch_assoc($sumResult)) {
+    $loanBalance = $sumRow['SUM(loan_balance)'];
+    $savingsBalance = $sumRow['SUM(savings_balance)'];
+}
 
 $zone_result = exec_query("SELECT zone_id,zone FROM `zone` WHERE 1");
 $zones = [];
@@ -24,6 +30,19 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
 ?>
 
 <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <table class="table table-bordered trTable" align="center" border="1">
+                <tr>
+                    <td class="activeBar">General Report</td>
+                    <td>Monthly Report</td>
+                    <td>Daily Report</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
     <div class="row">
         <div class="col-md-3">
         <!-- <div class="form-group">
@@ -94,16 +113,19 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                             <td>".$row['reg_date']."</td>
                             <td>".$row['savings_rate']."</td>
                             <td>".$row['loan_rate']."</td>
-                            <td>".-$row['loan_balance']."</td>
+                            <td>".$row['loan_balance']."</td>
                             <td>".$row['savings_balance']."</td>
                             
                             </tr>    
                             ";
                         $count++;
+                        
                     }
                     
                     ?>
                 </tbody>
+                <tr><td colspan="9">TOTAL LOAN BALANCE =<span id="totalLoan"><?php echo $loanBalance?></span></td></tr>
+                <tr><td colspan="9">TOTAL SAVINGS BALANCE =<span id="totalSavings"><?php echo $savingsBalance?></span></td></tr>
             </table>
         </div>
     </div>
