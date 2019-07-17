@@ -4,7 +4,7 @@ function setGeneral() {
 
 function setMonthly() {
     let dateFromDiv = $('#dateFromDiv');
-    dateFromDiv.html("<label for=\"searchForm\">Month</label><select name='month' id='' class='form-control'><option selected>Jan</option><option>Feb</option><option>Mar</option><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option></select>"
+    dateFromDiv.html("<label for=\"searchForm\">Month</label><select name='month' id='month' class='form-control'><option selected>Jan</option><option>Feb</option><option>Mar</option><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option></select>"
         )
     $('#dateToDiv').html("");
     $('#mRow').addClass('activeBar');
@@ -14,7 +14,7 @@ function setMonthly() {
 function setDaily() {
     let dateFromDiv = $('#dateFromDiv');
     let today = new Date();
-    dateFromDiv.html("<label for=\"searchForm\">Choose Day</label><input required value=\""+ today.getFullYear()+'-'+(today.getMonth()+1)+'-'+ today.getDate() +"\" name=\"dateTo\" id=\"dateTo\" class=\"form-control datepicker\" placeholder='&#128197;'/>"
+    dateFromDiv.html("<label for=\"searchForm\">Choose Day</label><input required value=\""+ today.getFullYear()+'-'+(today.getMonth()+1)+'-'+ today.getDate() +"\" name=\"chooseDay\" id=\"chooseDay\" class=\"form-control datepicker\" placeholder='&#128197;'/>"
         )
     $('#dateToDiv').html("");
     $('#dRow').addClass('activeBar');  
@@ -26,7 +26,7 @@ $( function() {
     });
 
 
-    var myTableau = $("#dataTable").DataTable({
+    const myTableau = $("#dataTable").DataTable({
         processing: true,
         scrollX: false,
         // serverSide: true,
@@ -36,7 +36,7 @@ $( function() {
         ],
     })
 
-    var myTableau2 = $("#dataTable2").DataTable({
+    const myTableau2 = $("#dataTable2").DataTable({
         processing: true,
         scrollX: false,
         // serverSide: true,
@@ -78,33 +78,80 @@ $( function() {
     }) 
 
     $('#transaction_filter').click(function() {
+        let params = new URLSearchParams(window.location.search);
+        let type = params.get('report');
         let dateFrom = $('#dateFrom').val();
         let dateTo = $('#dateTo').val();
         let zone = $('#zone').val();
+        let day = $('#chooseDay').val();
+        let month = $('#month').val();
         let transType = $("input[name='trans_type']:checked").val();
+        if (type == undefined || type == "") {
+            type = 'general';
+        }
 
-        $.ajax({
-            url: 'getCustomerData.php',
-            method: 'GET',
-            data: {
-                dateFrom: dateFrom,
-                dateTo: dateTo,
-                zone: zone,
-                type: transType,
-            },
-            dataType: 'json',
-            success: function(response) {
-                myTableau.clear().rows.add(response).draw();
-                $('.dateFrom').html(dateFrom);
-                $('.dateTo').html(dateTo);
-                $('.zone').html(zone);
-                $('.type').html(transType);
-               
-                
-            }
-        })
-
-    })
+        if (type == 'general') {
+            $.ajax({
+                url: 'getCustomerData.php',
+                method: 'GET',
+                data: {
+                    dateFrom: dateFrom,
+                    dateTo: dateTo,
+                    zone: zone,
+                    type: transType,
+                },
+                dataType: 'json',
+                success: function(response) {
+                    myTableau.clear().rows.add(response).draw();
+                    $('.dateFrom').html(dateFrom);
+                    $('.dateTo').html(dateTo);
+                    $('.zone').html(zone);
+                    $('.type').html(transType);
+                    alert('general') 
+                }
+            })
+        }
+        else if (type == 'monthly') {
+            $.ajax({
+                url: 'getCustomerData.php',
+                method: 'GET',
+                data: {
+                    month: month,
+                    zone: zone,
+                    type: transType,
+                },
+                dataType: 'json',
+                success: function(response) {
+                    myTableau.clear().rows.add(response).draw();
+                    $('.dateFrom').html(dateFrom);
+                    $('.dateTo').html(dateTo);
+                    $('.zone').html(zone);
+                    $('.type').html(transType);
+                    alert('monthly') 
+                }
+            })
+        }
+        else if (type == 'daily') {
+            $.ajax({
+                url: 'getCustomerData.php',
+                method: 'GET',
+                data: {
+                    day: day,
+                    zone: zone,
+                    type: transType,
+                },
+                dataType: 'json',
+                success: function(response) {
+                    myTableau.clear().rows.add(response).draw();
+                    $('.dateFrom').html(dateFrom);
+                    $('.dateTo').html(dateTo);
+                    $('.zone').html(zone);
+                    $('.type').html(transType);
+                    alert(day) 
+                }
+            })
+        }
+    });
   
     // getCustData();
     if ($('#custNo').val() == "") {
@@ -284,6 +331,8 @@ $( function() {
             }
         })
     }
+
+    
         
     
                 });

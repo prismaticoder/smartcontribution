@@ -55,7 +55,7 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                 <tr>
                 <td id="gRow"><a href="?report=general">General Report</a></td>
                 <td id="mRow"><a href="?report=monthly">Monthly Report</a></td>
-                    <td id="dRow"><a href="?report=daily">Daily Report</a></td>
+                <td id="dRow"><a href="?report=daily">Daily Report</a></td>
                 </tr>
             </table>
         </div>
@@ -232,6 +232,10 @@ if (isset($_GET['report']) or $_GET['report'] != "") {
     else if ($report == 'daily') {
         echo "<script>setDaily();</script>";
     }
+}
+
+else {
+    echo "<script>setGeneral();</script>";
 }
 
 ?>
