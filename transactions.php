@@ -14,6 +14,23 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
     }
 };
 
+// if (isset($_GET['report']) or $_GET['report'] != "") {
+//     $report = $_GET['report'];
+
+//     if ($report == 'general') {
+//         echo "<script>setGeneral();</script>";
+//     }
+//     else if ($report == 'monthly') {
+//         echo "<script>setMonthly();</script>";
+//     }
+//     else if ($report == 'daily') {
+//         echo "<script>setDaily();</script>";
+//     }
+// }
+// else {
+//     $_GET['report'] = 'general';
+// }
+
 ?>
 
 <div class="container">
@@ -31,14 +48,27 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
 </div>
 <hr>
 <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <table class="table table-bordered trTable" align="center" border="1">
+                <tr>
+                <td id="gRow"><a href="?report=general">General Report</a></td>
+                <td id="mRow"><a href="?report=monthly">Monthly Report</a></td>
+                    <td id="dRow"><a href="?report=daily">Daily Report</a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
 <div class="row w3-padding-24">
                 <div class="col-md-3">
-                    <div class="form-group required">
+                    <div id="dateFromDiv" class="form-group required">
                         <label for="searchForm">DateRange (From)</label>
                         <input required value="<?php echo date('Y-m-d')?>" name="dateFrom" id="dateFrom" class="form-control datepicker" placeholder='&#128197;'/>
                     </div>
                 
-                    <div class="form-group required">
+                    <div id="dateToDiv" class="form-group required">
                         <label for="searchForm">DateRange (To)</label>
                         <input required value="<?php echo date('Y-m-d')?>" name="dateTo" id="dateTo" class="form-control datepicker" placeholder='&#128197;'/>
                     </div>
@@ -187,6 +217,24 @@ while ($row = mysqli_fetch_assoc($result)) {
 </div>
 </div>
 </div>
+
+<?php
+
+if (isset($_GET['report']) or $_GET['report'] != "") {
+    $report = $_GET['report'];
+
+    if ($report == 'general') {
+        echo "<script>setGeneral();</script>";
+    }
+    else if ($report == 'monthly') {
+        echo "<script>setMonthly();</script>";
+    }
+    else if ($report == 'daily') {
+        echo "<script>setDaily();</script>";
+    }
+}
+
+?>
 
 
 <?php require_once('partials/footer.php')?>

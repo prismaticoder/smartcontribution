@@ -1,7 +1,30 @@
+function setGeneral() {
+    $('#gRow').addClass('activeBar');
+}
+
+function setMonthly() {
+    let dateFromDiv = $('#dateFromDiv');
+    dateFromDiv.html("<label for=\"searchForm\">Month</label><select name='month' id='' class='form-control'><option selected>Jan</option><option>Feb</option><option>Mar</option><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option></select>"
+        )
+    $('#dateToDiv').html("");
+    $('#mRow').addClass('activeBar');
+
+}
+
+function setDaily() {
+    let dateFromDiv = $('#dateFromDiv');
+    let today = new Date();
+    dateFromDiv.html("<label for=\"searchForm\">Choose Day</label><input required value=\""+ today.getFullYear()+'-'+(today.getMonth()+1)+'-'+ today.getDate() +"\" name=\"dateTo\" id=\"dateTo\" class=\"form-control datepicker\" placeholder='&#128197;'/>"
+        )
+    $('#dateToDiv').html("");
+    $('#dRow').addClass('activeBar');  
+}
+
 $( function() {
     $( ".datepicker" ).datepicker({
         dateFormat: "yy-mm-dd"
     });
+
 
     var myTableau = $("#dataTable").DataTable({
         processing: true,
