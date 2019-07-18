@@ -1,8 +1,6 @@
 <?php 
 require_once('partials/header.php'); 
 
-$result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id ORDER BY transactions.transaction_date DESC");
-
 $zone_result = exec_query("SELECT zone_id,zone FROM `zone` WHERE 1");
 $zones = [];
 while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
@@ -14,29 +12,34 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
     }
 };
 
-// if (isset($_GET['report']) or $_GET['report'] != "") {
-//     $report = $_GET['report'];
+if (isset($_GET['report']) or $_GET['report'] != "") {
+    $report = $_GET['report'];
 
-//     if ($report == 'general') {
-//         echo "<script>setGeneral();</script>";
-//     }
-//     else if ($report == 'monthly') {
-//         echo "<script>setMonthly();</script>";
-//     }
-//     else if ($report == 'daily') {
-//         echo "<script>setDaily();</script>";
-//     }
-// }
-// else {
-//     $_GET['report'] = 'general';
-// }
+    if ($report == 'general') {
+        $result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id ORDER BY transactions.transaction_date DESC");
+
+    }
+    else if ($report == 'monthly') {
+        $month = date('M',strtotime(date('Y-m-d')));
+        $result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.month = '$month' ORDER BY transactions.transaction_date DESC");
+
+    }
+    else if ($report == 'daily') {
+        $day = date('Y-m-d');
+        $result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date = '$day' ORDER BY transactions.transaction_date DESC");
+    }
+}
+
+else {
+    $result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id ORDER BY transactions.transaction_date DESC");
+}
 
 ?>
 
 <div class="container">
     <h1 class="w3-center">ISEOLUWA AL-MONYASHAU VENTURES</h1>
     <hr>
-    <h3 class="w3-center">REPORT FOR TRANSACTIONS TAKEN PLACE BETWEEN <span class="dateFrom">____</span> AND <span class="dateTo">____</span></h3>
+    <h3 class="w3-center headerText">TRANSACTION REPORT | <span class="dateFrom">____</span> - <span class="dateTo">____</span></h3>
     <table class="table" border="1">
         <tr>
             <td><h4 class="w3-center">ZONE : <span class='zone'>ALL</span></h4></td>

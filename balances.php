@@ -124,8 +124,10 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                     
                     ?>
                 </tbody>
+                <tfoot>
                 <tr><td colspan="9">TOTAL LOAN BALANCE =<span id="totalLoan"><?php echo $loanBalance?></span></td></tr>
                 <tr><td colspan="9">TOTAL SAVINGS BALANCE =<span id="totalSavings"><?php echo $savingsBalance?></span></td></tr>
+                </tfoot>
             </table>
         </div>
     </div>

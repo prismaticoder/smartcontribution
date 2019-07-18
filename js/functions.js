@@ -3,10 +3,14 @@ function setGeneral() {
 }
 
 function setMonthly() {
+    let curDate = new Date();
+    let curMonth = curDate.toLocaleString('default', {month: 'short'});
     let dateFromDiv = $('#dateFromDiv');
     dateFromDiv.html("<label for=\"searchForm\">Month</label><select name='month' id='month' class='form-control'><option selected>Jan</option><option>Feb</option><option>Mar</option><option>Apr</option><option>May</option><option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option><option>Nov</option><option>Dec</option></select>"
         )
     $('#dateToDiv').html("");
+    $('#month').val(curMonth)
+    $('.headerText').html("TRANSACTION REPORT | Month : " + curMonth)
     $('#mRow').addClass('activeBar');
 
 }
@@ -14,9 +18,10 @@ function setMonthly() {
 function setDaily() {
     let dateFromDiv = $('#dateFromDiv');
     let today = new Date();
-    dateFromDiv.html("<label for=\"searchForm\">Choose Day</label><input required value=\""+ today.getFullYear()+'-'+(today.getMonth()+1)+'-'+ today.getDate() +"\" name=\"chooseDay\" id=\"chooseDay\" class=\"form-control datepicker\" placeholder='&#128197;'/>"
+    dateFromDiv.html("<label for=\"searchForm\">Choose Day</label><input required value=\""+ today.getFullYear()+'-'+("0" + (today.getMonth()+1)).slice(-2)+'-'+ today.getDate() +"\" name=\"chooseDay\" id=\"chooseDay\" class=\"form-control datepicker\" placeholder='&#128197;'/>"
         )
     $('#dateToDiv').html("");
+    $('.headerText').html("TRANSACTION REPORT | Date : " + today.getFullYear()+'-'+("0" + (today.getMonth()+1)).slice(-2)+'-'+ today.getDate())
     $('#dRow').addClass('activeBar');  
 }
 
@@ -32,7 +37,9 @@ $( function() {
         // serverSide: true,
         dom: 'Bfrtip',
         buttons: [
-            'csv','excel','print'
+            {extend: 'csv', footer: true},
+            {extend: 'excel', footer: true},
+            {extend: 'print', footer: true},
         ],
     })
 
@@ -42,7 +49,9 @@ $( function() {
         // serverSide: true,
         dom: 'Bfrtip',
         buttons: [
-            'csv','excel','print'
+            {extend: 'csv', footer: true},
+            {extend: 'excel', footer: true},
+            {extend: 'print', footer: true}
         ],
     })
 
@@ -106,8 +115,7 @@ $( function() {
                     $('.dateFrom').html(dateFrom);
                     $('.dateTo').html(dateTo);
                     $('.zone').html(zone);
-                    $('.type').html(transType);
-                    alert('general') 
+                    $('.type').html(transType); 
                 }
             })
         }
@@ -127,7 +135,7 @@ $( function() {
                     $('.dateTo').html(dateTo);
                     $('.zone').html(zone);
                     $('.type').html(transType);
-                    alert('monthly') 
+                    $('.headerText').html("TRANSACTION REPORT | Month : " + month)
                 }
             })
         }
@@ -147,7 +155,7 @@ $( function() {
                     $('.dateTo').html(dateTo);
                     $('.zone').html(zone);
                     $('.type').html(transType);
-                    alert(day) 
+                    $('.headerText').html("TRANSACTION REPORT | Date : " + day)
                 }
             })
         }
@@ -174,28 +182,28 @@ $( function() {
                     
                 }
             })
-        $.ajax({
-            url: 'getCustomerData.php',
-            method: 'POST',
-            data: {custID: $('#custNo').val()},
-            dataType: 'json',
-            success: function(response) {
-                if (response[0] !== 'enable') {
-                    $('#loanDiv').prepend('<h6><i>Note: You have to be registered for at least 3 months to be eligible for a loan</i></h6>');
-                    $('#validator').prop('disabled', true);
-                    $('#reset').prop('disabled', true);
-                    $('#guarrantor').prop('disabled', true);
-                    $('#loan_collect').prop('disabled', true);
-                    $('#loan_amount').prop('disabled', true);
-                    $('#loanDayNo').prop('disabled', true);
-                    $('#loan_submit').prop('disabled', true);
-                }
-                if (response[1] == 'noloan') {
-                    $('#loanDayNo').prop('disabled', true);
-                    $('#loan_submit').prop('disabled', true);
-                }
-            }
-        })
+        // $.ajax({
+        //     url: 'getCustomerData.php',
+        //     method: 'POST',
+        //     data: {custID: $('#custNo').val()},
+        //     dataType: 'json',
+        //     success: function(response) {
+        //         if (response[0] !== 'enable') {
+        //             $('#loanDiv').prepend('<h6><i>Note: You have to be registered for at least 3 months to be eligible for a loan</i></h6>');
+        //             $('#validator').prop('disabled', true);
+        //             $('#reset').prop('disabled', true);
+        //             $('#guarrantor').prop('disabled', true);
+        //             $('#loan_collect').prop('disabled', true);
+        //             $('#loan_amount').prop('disabled', true);
+        //             $('#loanDayNo').prop('disabled', true);
+        //             $('#loan_submit').prop('disabled', true);
+        //         }
+        //         if (response[1] == 'noloan') {
+        //             $('#loanDayNo').prop('disabled', true);
+        //             $('#loan_submit').prop('disabled', true);
+        //         }
+        //     }
+        // })
         $.ajax({
             url: 'getCustomerData.php',
             method: 'POST',

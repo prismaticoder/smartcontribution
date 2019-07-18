@@ -316,7 +316,7 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
     $result = exec_query($query);
 
     if (mysqli_num_rows($result) == 0) {
-        $response[0]=["<tr><h4><i>No results were found for the category selected!</i></h4></tr>"];
+    
     }
 
     else {
@@ -394,7 +394,7 @@ else if (isset($_GET['zoner'])) {
         );
 
     if (mysqli_num_rows($result) == 0) {
-            $response[]="<tr><td colspan=\"9\"><h4><i>No results were found for the category selected!</i></h4></td></tr>";
+
         }
 
     else {
@@ -461,7 +461,7 @@ else if (isset($_GET['month'])) {
     $result = exec_query($query);
 
     if (mysqli_num_rows($result) == 0) {
-        $response[0]=["<tr><h4><i>No results were found for the category selected!</i></h4></tr>"];
+    
     }
 
     else {
@@ -549,7 +549,7 @@ else if (isset($_GET['day'])) {
     $result = exec_query($query);
 
     if (mysqli_num_rows($result) == 0) {
-        $response[0]=["<tr><h4><i>No results were found for the category selected!</i></h4></tr>"];
+    
     }
 
     else {
