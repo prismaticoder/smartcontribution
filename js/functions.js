@@ -131,8 +131,6 @@ $( function() {
                 dataType: 'json',
                 success: function(response) {
                     myTableau.clear().rows.add(response).draw();
-                    $('.dateFrom').html(dateFrom);
-                    $('.dateTo').html(dateTo);
                     $('.zone').html(zone);
                     $('.type').html(transType);
                     $('.headerText').html("TRANSACTION REPORT | Month : " + month)
@@ -151,8 +149,6 @@ $( function() {
                 dataType: 'json',
                 success: function(response) {
                     myTableau.clear().rows.add(response).draw();
-                    $('.dateFrom').html(dateFrom);
-                    $('.dateTo').html(dateTo);
                     $('.zone').html(zone);
                     $('.type').html(transType);
                     $('.headerText').html("TRANSACTION REPORT | Date : " + day)

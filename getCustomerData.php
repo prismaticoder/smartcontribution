@@ -100,7 +100,8 @@ else if (isset($_POST['id'])) {
             <td>".$row['amount']."</td>
             <td>".$row['description']."</td>
             <td>".$row['type']."</td>
-            <td>".$row['balance']."</td>";
+            <td>".$row['savings_balance']."</td>
+            <td>".$row['loan_balance']."</td>";
             if ($row['isReversed'] != 1) {
                 $response.="<td><button class=\"btn btn-primary reverseBtn\" id=\"".$row['transaction_id']."\">Reverse Transaction</td>";
             }
@@ -113,7 +114,7 @@ else if (isset($_POST['id'])) {
         }
     }
     else {
-        $response .= "<td colspan='11'><h5><i>This Customer Has No Active Transactions</i></h5><td>";
+        $response .= "<td colspan='12'><h5><i>This Customer Has No Active Transactions</i></h5><td>";
     }
 
     exit($response);
@@ -234,30 +235,32 @@ else if (isset($_POST['transactionID'])) {
     }
 
     $newDesc = "Reversal of Transaction ID: ".$id;
-    $curBalance = getBalance($customer_id);
+    $curSavingsBalance = getSavingsBalance($customer_id);
+    $curLoanBalance = getLoanBalance($customer_id);
 
     if ($type == 'CR') {
-        $balance = $curBalance - $amount;
         if ($description == 'Daily Savings') {
-            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`savings_rate`,`savingsDayNo`,`balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$savings_rate','-$savingsDayNo','$balance',1)");
+            $balance = $curSavingsBalance - $amount;
+            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`savings_rate`,`savingsDayNo`,`savings_balance`, `loan_balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$savings_rate','-$savingsDayNo','$balance','$curLoanBalance',1)");
             if ($result2) {
-                $result3 = exec_query("UPDATE `main_customers` SET `balance` = `balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+                $result3 = exec_query("UPDATE `main_customers` SET `savings_balance` = `savings_balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
                 $result4 = exec_query("UPDATE `transactions` SET `isReversed` = 1 WHERE `transactions`.`transaction_id` = '$id'");
             }
         }
         else if ($description == 'Daily Loan Offset') {
-            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`loan_rate`,`loanDayNo`,`balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$loan_rate','-$loanDayNo','$balance',1)");
+            $balance = $curLoanBalance - $amount;
+            $result2 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`loan_rate`,`loanDayNo`,`savings_balance`,`loan_balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','-$amount','$newDesc', 'DR','$loan_rate','-$loanDayNo','$curSavingsBalance','$balance',1)");
             if ($result2) {
-                $result3 = exec_query("UPDATE `main_customers` SET `balance` = `balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+                $result3 = exec_query("UPDATE `main_customers` SET `loan_balance` = `loan_balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
                 $result4 = exec_query("UPDATE `transactions` SET `isReversed` = 1 WHERE `transactions`.`transaction_id` = '$id'");
             }
         }
     }
     else if ($type == 'DR') {
-        $balance = $curBalance + $amount;
-        $result4 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','$amount','$newDesc', 'CR','$balance',1)");
+        $balance = $curLoanBalance + $amount;
+        $result4 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`savings_balance`,`loan_balance`,`isReversed`) VALUES ('$customer_id','$transaction_date','$month','$year','$amount','$newDesc', 'CR','$curSavingsBalance','$balance',1)");
         if ($result4) {
-            $result5 = exec_query("UPDATE `main_customers` SET `balance` = `balance` + '$amount',`loan_collected` = `loan_collected` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
+            $result5 = exec_query("UPDATE `main_customers` SET `loan_balance` = `loan_balance` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
             $result6 = exec_query("UPDATE `transactions` SET `isReversed` = 1 WHERE `transactions`.`transaction_id` = '$id'");
         }
         
@@ -280,7 +283,8 @@ else if (isset($_POST['transactionID'])) {
             <td>".$row['amount']."</td>
             <td>".$row['description']."</td>
             <td>".$row['type']."</td>
-            <td>".$row['balance']."</td>";
+            <td>".$row['savings_balance']."</td>
+            <td>".$row['loan_balance']."</td>";
             if ($row['isReversed'] != 1) {
                 $response.="<td><button class=\"btn btn-primary reverseBtn\" id=\"".$row['transaction_id']."\">Reverse Transaction</td>";
             }
@@ -301,7 +305,7 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
     $type = $_GET['type'];
     $response = [];
 
-    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date >= '$dateFrom' AND transactions.transaction_date <= '$dateTo' ";
+    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.savings_balance,,transactions.loan_balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date >= '$dateFrom' AND transactions.transaction_date <= '$dateTo' ";
     
     if ($zone != "") {
         $query.="AND zone.zone = '$zone' ";
@@ -347,7 +351,8 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
                 <td>".$row['amount']."</td>","
                 <td>".$row['description']."</td>","
                 <td>".$row['type']."</td>","
-                <td>".$row['balance']."</td>
+                <td>".$row['savings_balance']."</td>","
+                <td>".$row['loan_balance']."</td>
                 
                 </tr>    
                 "];    
@@ -368,7 +373,8 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
                 <td>".$row['amount']."</td>","
                 <td>".$row['description']."</td>","
                 <td>".$row['type']."</td>","
-                <td>".$row['balance']."</td>
+                <td>".$row['savings_balance']."</td>","
+                <td>".$row['loan_balance']."</td>
                 
                 </tr>    
                 "];    
@@ -446,7 +452,7 @@ else if (isset($_GET['month'])) {
     $zone = $_GET['zone'];
     $type = $_GET['type'];
 
-    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.month = '$month' ";
+    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.savings_balance,transactions.loan_balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.month = '$month' ";
 
     if ($zone != "") {
         $query.="AND zone.zone = '$zone' ";
@@ -492,7 +498,8 @@ else if (isset($_GET['month'])) {
                 <td>".$row['amount']."</td>","
                 <td>".$row['description']."</td>","
                 <td>".$row['type']."</td>","
-                <td>".$row['balance']."</td>
+                <td>".$row['savings_balance']."</td>","
+                <td>".$row['loan_balance']."</td>
                 
                 </tr>    
                 "];    
@@ -513,7 +520,8 @@ else if (isset($_GET['month'])) {
                 <td>".$row['amount']."</td>","
                 <td>".$row['description']."</td>","
                 <td>".$row['type']."</td>","
-                <td>".$row['balance']."</td>
+                <td>".$row['savings_balance']."</td>","
+                <td>".$row['loan_balance']."</td>
                 
                 </tr>    
                 "];    
@@ -534,7 +542,7 @@ else if (isset($_GET['day'])) {
     $type = $_GET['type'];
     $response = [];
 
-    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date = '$day' ";
+    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.savings_balance,transactions.loan_balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date = '$day' ";
 
     if ($zone != "") {
         $query.="AND zone.zone = '$zone' ";
@@ -580,7 +588,8 @@ else if (isset($_GET['day'])) {
                 <td>".$row['amount']."</td>","
                 <td>".$row['description']."</td>","
                 <td>".$row['type']."</td>","
-                <td>".$row['balance']."</td>
+                <td>".$row['savings_balance']."</td>","
+                <td>".$row['loan_balance']."</td>
                 
                 </tr>    
                 "];    
@@ -601,7 +610,8 @@ else if (isset($_GET['day'])) {
                 <td>".$row['amount']."</td>","
                 <td>".$row['description']."</td>","
                 <td>".$row['type']."</td>","
-                <td>".$row['balance']."</td>
+                <td>".$row['savings_balance']."</td>","
+                <td>".$row['loan_balance']."</td>
                 
                 </tr>    
                 "];    

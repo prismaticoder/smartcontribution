@@ -35,7 +35,7 @@ if (isset($_POST['savings_submit'])) {
         $savingsArray['transaction_date'] = $_POST['transaction_date'];
         $savingsArray['customer_id'] = $_POST['id'];
         $savingsArray['dayNo'] = $_POST['savingsDayNo'];
-        $savingsArray['balance'] = $_POST['balance'];
+        $savingsArray['balance'] = $_POST['sbalance'];
         $savingsArray['savings_rate'] = $_POST['savings_rate'];
         //Function to execute contribution
         exec_contribution($savingsArray, 'dailysavings');    
@@ -50,7 +50,7 @@ if (isset($_POST['loan_submit'])) {
         $loanArray['transaction_date'] = $_POST['transaction_date'];
         $loanArray['customer_id'] = $_POST['id'];
         $loanArray['dayNo'] = $_POST['loanDayNo'];
-        $loanArray['balance'] = $_POST['balance'];
+        $loanArray['balance'] = $_POST['lbalance'];
         $loanArray['loan_rate'] = $_POST['loan_rate'];
         //Function to execute contribution
         exec_contribution($loanArray, 'offsetloan');    
@@ -163,7 +163,9 @@ if (isset($_POST['submitLoan'])) {
                     <td colspan="2">
                         <label for="date">Date of Transaction</label>
                         <input name="transaction_date" type="text" class="datepicker form-control" placeholder='&#128197;' value="<?php echo date('Y-m-d')?>">
-                        <input name="balance" type="hidden" value="<?php echo getSavingsBalance($rows['customer_id']) ?>">
+                        <input name="sbalance" type="hidden" value="<?php echo getSavingsBalance($rows['customer_id']) ?>">
+                        <input name="lbalance" type="hidden" value="<?php echo getLoanBalance($rows['customer_id']) ?>">
+
                     </td>
                 </tr>
             
@@ -230,7 +232,7 @@ if (isset($_POST['submitLoan'])) {
                                 <label for="guarrantor">Guarrantor</label>
                                 <input required id="guarrantor" name="guarrantor" type="text" class="form-control" placeholder="Card No e.g A1,B23...  ">
                                 <small id="errorText"></small>
-                                <input name="balance" type="hidden" value="<?php echo getSavingsBalance($rows['customer_id']) ?>">
+                                <input name="balance" type="hidden" value="<?php echo getLoanBalance($rows['customer_id']) ?>">
                                 <input id="cardNo" type="hidden" value="<?php printf ($rows['card_no']) ?>">
                         </td>
                         <td>
@@ -255,7 +257,7 @@ if (isset($_POST['submitLoan'])) {
         </div>
     </div>
 
-    <table class="table table-bordered table-hover" id="transactionsTable" style="display:none;">
+    <table class="table table-bordered table-hover table-responsive" id="transactionsTable" style="display:none;">
 
         <thead>
             <tr>
@@ -268,7 +270,8 @@ if (isset($_POST['submitLoan'])) {
                 <th>AMOUNT</th>
                 <th>DESCRIPTION</th>
                 <th>TYPE</th>
-                <th>BALANCE</th>
+                <th>SAVINGS BALANCE</th>
+                <th>LOAN BALANCE</th>
                 <th colspan="2">REVERSAL</th>
 
             </tr>
