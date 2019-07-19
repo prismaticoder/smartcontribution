@@ -252,7 +252,7 @@ if (isset($_POST['submitLoan'])) {
         </div>
     </div>
 
-    <table class="table table-bordered table-hover table-responsive" id="transactionsTable dataTable" style="display:none;">
+    <table class="table table-bordered table-hover table-responsive dataTable3" id="transactionsTable" style="display:none;">
 
         <thead>
             <tr>

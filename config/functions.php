@@ -227,6 +227,7 @@ function exec_contribution($array,$action) {
     $current_date = date('Y-m-d');
     if ($action == 'dailysavings') {
         $transaction_date = $array['transaction_date'];
+        $transaction_time = $transaction_date . " " . date('H:i:s');
         $amount = $array['amount'];
         $customer_id = $array['customer_id'];
         if ($transaction_date <= $current_date) {
@@ -236,7 +237,7 @@ function exec_contribution($array,$action) {
             $balance = $array['balance'] + $amount;
             $curLoanBalance = getLoanBalance($customer_id);
             $savings_rate = $array['savings_rate'];
-            $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`savings_rate`,`savingsDayNo`,`amount`,`description`,`type`,`savings_balance`,`loan_balance`) VALUES ('$customer_id','$transaction_date','$month','$year','$savings_rate','$dayNo','$amount','Daily Savings','CR','$balance','$curLoanBalance')");
+            $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`transaction_time`,`month`,`year`,`savings_rate`,`savingsDayNo`,`amount`,`description`,`type`,`savings_balance`,`loan_balance`) VALUES ('$customer_id','$transaction_date','$transaction_time','$month','$year','$savings_rate','$dayNo','$amount','Daily Savings','CR','$balance','$curLoanBalance')");
             if ($result1) {
                 $result2 = exec_query("UPDATE `main_customers` SET `savings_balance` = `savings_balance` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
                 echo "<script>alert('Contribution Added Successfully!');</script>";
@@ -249,6 +250,7 @@ function exec_contribution($array,$action) {
     }
     else {
         $transaction_date = $array['transaction_date'];
+        $transaction_time = $transaction_date . " " . date('H:i:s');
         $amount = $array['amount'];
         $customer_id = $array['customer_id'];
         if ($transaction_date <= $current_date) {
@@ -258,7 +260,7 @@ function exec_contribution($array,$action) {
             $balance = $array['balance'] + $amount;
             $loan_rate = $array['loan_rate'];
             $curSavingsBalance = getSavingsBalance($customer_id);
-            $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`loan_rate`,`loanDayNo`,`amount`,`description`,`type`,`savings_balance`,`loan_balance`) VALUES ('$customer_id','$transaction_date','$month','$year','$loan_rate','$dayNo','$amount','Daily Loan Offset','CR','$curSavingsBalance','$balance')");
+            $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`transaction_time`,`month`,`year`,`loan_rate`,`loanDayNo`,`amount`,`description`,`type`,`savings_balance`,`loan_balance`) VALUES ('$customer_id','$transaction_date','$transaction_time','$month','$year','$loan_rate','$dayNo','$amount','Daily Loan Offset','CR','$curSavingsBalance','$balance')");
             if ($result1) {
                 $result2 = exec_query("UPDATE `main_customers` SET `loan_balance` = `loan_balance` + '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
                 echo "<script>alert('Contribution Added Successfully!');</script>";
@@ -276,6 +278,7 @@ function exec_loan($array) {
     //Function to execute a Loan transaction
     $current_date = date('Y-m-d');
     $transaction_date = $array['transaction_date'];
+    $transaction_time = $transaction_date . " " . date('H:i:s');
     $amount = $array['amount'];
     $customer_id = $array['customer_id'];
     $author = $array['author'];
@@ -285,7 +288,7 @@ function exec_loan($array) {
         $balance = $array['balance'] - $amount;
         $curSavingsBalance = getSavingsBalance($customer_id);
 
-        $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`month`,`year`,`amount`,`description`,`type`,`savings_balance`,`loan_balance`,`author`) VALUES ('$customer_id','$transaction_date','$month','$year','$amount','Loan Collection', 'DR','$curSavingsBalance','$balance', '$author')");
+        $result1 = exec_query("INSERT INTO `transactions` (`customer_id`,`transaction_date`,`transaction_time`,`month`,`year`,`amount`,`description`,`type`,`savings_balance`,`loan_balance`,`author`) VALUES ('$customer_id','$transaction_date','$transaction_time','$month','$year','$amount','Loan Collection', 'DR','$curSavingsBalance','$balance', '$author')");
         if ($result1) {
             $result2 = exec_query("UPDATE `main_customers` SET `loan_balance` = `loan_balance` - '$amount' WHERE `main_customers`.`customer_id` = '$customer_id' ");
             echo "<script>alert('Successful Loan Collection!');</script>";
