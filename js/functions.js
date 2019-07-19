@@ -178,6 +178,7 @@ $( function() {
                     
                 }
             })
+        
         // $.ajax({
         //     url: 'getCustomerData.php',
         //     method: 'POST',
@@ -292,6 +293,8 @@ $( function() {
             window.location.hash = '#transactionsTable';
             
         })
+        
+        
     }
     $('#searchBtn').click(function() {
         if ($('#searchForm').val() !== "") {
@@ -315,6 +318,7 @@ $( function() {
             }
         })
     })
+        
 
     
 

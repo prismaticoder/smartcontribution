@@ -58,20 +58,15 @@ if (isset($_POST['loan_submit'])) {
 }
 
 if (isset($_POST['submitLoan'])) {
-    if ($_POST['balance'] >= $_POST['loan_amount']) {
-        $collectionArray = [];
-        $collectionArray['transaction_date'] = $_POST['transaction_date'];
-        $collectionArray['customer_id'] = $_POST['id'];
-        $collectionArray['amount'] = $_POST['loan_amount'];
-        $collectionArray['author'] = $_POST['guarrantor'];
-        $collectionArray['balance'] = $_POST['balance'];
+    $collectionArray = [];
+    $collectionArray['transaction_date'] = $_POST['transaction_date'];
+    $collectionArray['customer_id'] = $_POST['id'];
+    $collectionArray['amount'] = $_POST['loan_amount'];
+    $collectionArray['author'] = $_POST['guarrantor'];
+    $collectionArray['balance'] = $_POST['balance'];
 
-        exec_loan($collectionArray);
-    }
-    else {
-        echo "<script>alert('Error! Insufficient Balance')</script>";
-    }
-
+    exec_loan($collectionArray);
+    
 }
 
 
@@ -171,13 +166,13 @@ if (isset($_POST['submitLoan'])) {
             
                 <tr>
                     <td>
-                        <label for="srate">Savings Rate</label>
-                        <input id="savings_rate" name="savings_rate" type="number" readonly class="form-control" value="">
+                        <label for="savings_rate">Savings Rate</label>
+                        <input id="savings_rate" name="savings_rate" type="number" readonly class="form-control" value="<?php printf($rows['savings_rate']) ?>">
                         <input  type="hidden" value="">
                     </td>
                     <td>
-                            <label for="lrate">Loan Rate</label>
-                            <input id="loan_rate" name="loan_rate" type="number" readonly class="form-control" value="">
+                            <label for="loan_rate">Loan Rate</label>
+                            <input id="loan_rate" name="loan_rate" type="number" readonly class="form-control"  value="<?php printf($rows['loan_rate']) ?>">
                     </td>
                 </tr>
                 <tr>
@@ -222,7 +217,7 @@ if (isset($_POST['submitLoan'])) {
                     <tr>
                         <td colspan="2">
                             <label for="date">Date of Transaction</label>
-                            <input name="transaction_date" type="text" class="datepicker form-control" placeholder='&#128197;' value="<?php echo date('Y-m-d')?>">
+                            <input name="transaction_date" id="loanDate" type="text" class="datepicker form-control" placeholder='&#128197;' value="<?php echo date('Y-m-d')?>">
                             <input type="hidden" name="id" value="<?php printf($rows['customer_id'])?>">
                         </td>
                     </tr>
@@ -257,7 +252,7 @@ if (isset($_POST['submitLoan'])) {
         </div>
     </div>
 
-    <table class="table table-bordered table-hover table-responsive" id="transactionsTable" style="display:none;">
+    <table class="table table-bordered table-hover table-responsive" id="transactionsTable dataTable" style="display:none;">
 
         <thead>
             <tr>
@@ -336,5 +331,29 @@ if (isset($_POST['submitLoan'])) {
                 </div>
 </div>
                 
+<script>
+let loanRate = $('.my-table td>input#loan_rate').val();
+        if (!(loanRate == 0)) {
+            let loanDate = $('#loanDate').val();
+            let curMonth = parseInt(loanDate.slice(5,7))
+            let curYear = parseInt(loanDate.slice(0,4))
 
+            let dayNumber = new Date(curYear, curMonth, 0).getDate();
+
+            let total = loanRate * dayNumber;
+            $('#loan_amount').prop('min', loanRate );
+            $('#loan_amount').prop('max', total);
+        }
+        else {
+            $('#loanDiv').prepend('<h6><i>Note: You have to set a daily payable Loan Rate before you can collect loans</i></h6>');
+            $('#validator').prop('disabled', true);
+            $('#reset').prop('disabled', true);
+            $('#guarrantor').prop('disabled', true);
+            $('#loan_collect').prop('disabled', true);
+            $('#loan_amount').prop('disabled', true);
+            $('#loanDayNo').prop('disabled', true);
+            $('#loan_submit').prop('disabled', true);
+        }
+
+</script>
 <?php require_once('partials/footer.php'); ?>
