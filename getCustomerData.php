@@ -388,17 +388,23 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
 
 }
 
-else if (isset($_GET['zoner'])) {
-    $zone = $_GET['zone'];
+else if (isset($_GET['bzone']) and isset($_GET['bmonth'])) {
+    $month = $_GET['bmonth'];
+    $zone = $_GET['bzone'];
     $response = [];
-    $result = exec_query(
-        "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.loan_balance,main_customers.savings_balance,zone.zone 
-        FROM `main_customers` 
-        INNER JOIN `zone` 
+    $query =
+        "SELECT DISTINCT main_customers.customer_name,main_customers.customer_id,main_customers.card_no,main_customers.loan_rate,main_customers.savings_rate
+        FROM `main_customers`
+        INNER JOIN `zone`
         ON main_customers.zone_id = zone.zone_id
-        WHERE zone.zone = '$zone'
-        ORDER BY main_customers.customer_name ASC"
-        );
+        LEFT JOIN `transactions` 
+        ON main_customers.customer_id = transactions.customer_id ";
+
+    if ($zone != "") {
+        $query.="WHERE zone.zone = '$zone' ";
+    }
+
+    $result = exec_query($query);
 
     if (mysqli_num_rows($result) == 0) {
 
@@ -407,42 +413,25 @@ else if (isset($_GET['zoner'])) {
     else {
         $count = 1;
         while($row = mysqli_fetch_assoc($result)) {
-            $response[]=["
-            <tr>
-            <td>".$count."</td>","
-            <td>".$row['card_no']."</td>","
-            <td>".$row['customer_name']."</td>","
-            <td>".$row['zone']."</td>","
-            <td>".$row['reg_date']."</td>","
-            <td>".$row['savings_rate']."</td>","
-            <td>".$row['loan_rate']."</td>","
-            <td>".-$row['loan_balance']."</td>","
-            <td>".$row['savings_balance']."</td>
+            $customer_id = $row['customer_id'];
+            $response[] = ["
+                <tr>
+                <td>".$count."</td>","
+                <td>".$row['card_no']."</td>","
+                <td>".$row['customer_name']."</td>","
+                <td>".$row['loan_rate']."</td>","
+                <td>".getContNumber($customer_id, $month,'loan')."</td>","
+                <td>".$row['savings_rate']."</td>","
+                <td>".getContNumber($customer_id, $month,'savings')."</td>","
+                <td>".getMonthBalance($customer_id, $month,'savings')."</td>","
+                <td>".getMonthBalance($customer_id, $month,'loan')."</td>
+                
+                </tr>    
+                "];
+            $count++;
             
-            </tr>    
-            "];
-        $count++;
+        }
     }
-    }
-
-    // $count = 1;
-    // while($row = mysqli_fetch_assoc($result)) {
-    //     $response.="
-    //         <tr>
-    //         <td>".$count."</td>
-    //         <td>".$row['card_no']."</td>
-    //         <td>".$row['customer_name']."</td>
-    //         <td>".$row['zone']."</td>
-    //         <td>".$row['reg_date']."</td>
-    //         <td>".$row['savings_rate']."</td>
-    //         <td>".$row['loan_rate']."</td>
-    //         <td>".-$row['loan_balance']."</td>
-    //         <td>".$row['savings_balance']."</td>
-            
-    //         </tr>    
-    //         ";
-    //     $count++;
-    // }
 
     echo json_encode($response);
 }

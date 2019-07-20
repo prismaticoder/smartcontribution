@@ -10,7 +10,7 @@ function setMonthly() {
         )
     $('#dateToDiv').html("");
     $('#month').val(curMonth)
-    $('.headerText').html("TRANSACTION REPORT | Month : " + curMonth)
+    $('.headerText').html("Month : " + curMonth)
     $('#mRow').addClass('activeBar');
 
 }
@@ -21,7 +21,7 @@ function setDaily() {
     dateFromDiv.html("<label for=\"searchForm\">Choose Day</label><input required value=\""+ today.getFullYear()+'-'+("0" + (today.getMonth()+1)).slice(-2)+'-'+ today.getDate() +"\" name=\"chooseDay\" id=\"chooseDay\" class=\"form-control datepicker\" placeholder='&#128197;'/>"
         )
     $('#dateToDiv').html("");
-    $('.headerText').html("TRANSACTION REPORT | Date : " + today.getFullYear()+'-'+("0" + (today.getMonth()+1)).slice(-2)+'-'+ today.getDate())
+    $('.headerText').html("Date : " + today.getFullYear()+'-'+("0" + (today.getMonth()+1)).slice(-2)+'-'+ today.getDate())
     $('#dRow').addClass('activeBar');  
 }
 
@@ -55,6 +55,16 @@ $( function() {
         ],
     })
 
+    // $(".dataTable3").DataTable({
+    //     processing: true,
+    //     scrollX: false,
+    //     // serverSide: true,
+    //     dom: 'Bfrtip',
+    //     buttons: [
+    //         'csv','excel','print'
+    //     ],
+    // })
+
     $('#addUserSubmit').prop('disabled',true);
     $('#conf_password').keyup(function() {
         if ($(this).val() == $('#password').val()) {
@@ -70,16 +80,19 @@ $( function() {
     })
 
     $('#balance_filter').click(function() {
-        let zone = $('#zone').val();
+        let bmonth = $('#month').val();
+        let bzone = $('#zone').val();
 
         $.ajax({
             url: 'getCustomerData.php',
             method: 'GET',
             data: {
-                zone: zone,
+                bmonth: bmonth,
+                bzone: bzone,
             },
             dataType: 'json',
             success: function(response) {
+                alert('success')
                 myTableau2.clear().rows.add(response).draw();
             }
         })
@@ -95,7 +108,7 @@ $( function() {
         let day = $('#chooseDay').val();
         let month = $('#month').val();
         let transType = $("input[name='trans_type']:checked").val();
-        if (type == undefined || type == "") {
+        if (type == null || type == "") {
             type = 'general';
         }
 
@@ -111,6 +124,7 @@ $( function() {
                 },
                 dataType: 'json',
                 success: function(response) {
+                    console.log('general!')
                     myTableau.clear().rows.add(response).draw();
                     $('.dateFrom').html(dateFrom);
                     $('.dateTo').html(dateTo);
@@ -130,6 +144,7 @@ $( function() {
                 },
                 dataType: 'json',
                 success: function(response) {
+                    console.log('general!')
                     myTableau.clear().rows.add(response).draw();
                     $('.zone').html(zone);
                     $('.type').html(transType);

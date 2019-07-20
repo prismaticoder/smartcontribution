@@ -46,38 +46,25 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-4"></div>
-        <div class="col-md-4">
-            <table class="table table-bordered trTable" align="center" border="1">
-                <tr>
-                    <td id="gRow"><a href="?report=general">General Report</a></td>
-                <td id="mRow"><a href="?report=monthly">Monthly Report</a></td>
-                <td id="dRow"><a href="?report=daily">Daily Report</a></td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-md-4"></div>
-    </div>
-    <div class="row">
         <div class="col-md-3">
-        <!-- <div class="form-group">
+        <div class="form-group">
                 <label for="month">Choose A Month</label>    
                     <select name='month' id='month' class='form-control'>
                         <option selected value> -- </option>
-                        <option value="">January</option>
-                        <option value="">February</option>
-                        <option value="">March</option>
-                        <option value="">April</option>
-                        <option value="">May</option>
-                        <option value="">June</option>
-                        <option value="">July</option>
-                        <option value="">August</option>
-                        <option value="">September</option>
-                        <option value="">October</option>
-                        <option value="">November</option>
-                        <option value="">December</option>
+                        <option>Jan</option>
+                        <option>Feb</option>
+                        <option>Mar</option>
+                        <option>Apr</option>
+                        <option>May</option>
+                        <option>Jun</option>
+                        <option>Jul</option>
+                        <option>Aug</option>
+                        <option>Sep</option>
+                        <option>Oct</option>
+                        <option>Nov</option>
+                        <option>Dec</option>
                         </select>
-                </div> -->
+                </div>
             <div id="dateFromDiv" class="form-group required">
             </div>
             <div class="form-group">
