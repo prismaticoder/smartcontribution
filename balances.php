@@ -2,14 +2,15 @@
 require_once('partials/header.php'); 
 
 //Filters are Zone and Month. Simple!
+$month = date('M', strtotime(date('Y-m-d')));
 
 $result = exec_query(
-    "SELECT main_customers.customer_id,main_customers.card_no,main_customers.customer_name,main_customers.reg_date,main_customers.loan_rate,main_customers.savings_rate,main_customers.loan_balance,main_customers.savings_balance,zone.zone 
-    FROM `main_customers` 
-    INNER JOIN `zone` 
-    ON main_customers.zone_id = zone.zone_id
-    ORDER BY main_customers.customer_name ASC"
-    );
+"SELECT DISTINCT main_customers.customer_name,main_customers.customer_id,main_customers.card_no,main_customers.loan_rate,main_customers.savings_rate
+FROM `main_customers` 
+LEFT JOIN `transactions` 
+ON main_customers.customer_id = transactions.customer_id
+");
+
 $sumResult = exec_query("SELECT SUM(savings_balance),SUM(loan_balance) FROM `main_customers`");
 
 while ($sumRow = mysqli_fetch_assoc($sumResult)) {
@@ -29,15 +30,29 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
 };
 ?>
 
+<div class="container">
+    <h1 class="w3-center">ISEOLUWA AL-MONYASHAU VENTURES</h1>
+    <hr>
+    <h3 class="w3-center">BALANCE REPORT | <span class="headerText"><span class="dateFrom">____</span> - <span class="dateTo">____</span></span></h3>
+    <table class="table" border="1">
+        <tr>
+            <td><h4 class="w3-center">ZONE : <span class='zone'>ALL</span></h4></td>
+        </tr>
+    </table>
+    
+
+</div>
+<hr>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-4"></div>
         <div class="col-md-4">
             <table class="table table-bordered trTable" align="center" border="1">
                 <tr>
-                    <td class="activeBar">General Report</td>
-                    <td>Monthly Report</td>
-                    <td>Daily Report</td>
+                    <td id="gRow"><a href="?report=general">General Report</a></td>
+                <td id="mRow"><a href="?report=monthly">Monthly Report</a></td>
+                <td id="dRow"><a href="?report=daily">Daily Report</a></td>
                 </tr>
             </table>
         </div>
@@ -63,6 +78,8 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                         <option value="">December</option>
                         </select>
                 </div> -->
+            <div id="dateFromDiv" class="form-group required">
+            </div>
             <div class="form-group">
                 <label for="zone">Select Zone</label>    
                     <select name='zone' id='zone' class='form-control'>
@@ -90,10 +107,10 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                 <th>S/N</th>
                 <th>CARD NO</th>
                 <th>NAME</th>
-                <th>ZONE</th>
-                <th>REGISTRATION DATE</th>
+                <th>L. RATE</th>
+                <th>DAY NO</th>
                 <th>S.RATE</th>
-                <th>L.RATE</th>
+                <th>DAY NO</th>
                 <th>LOAN BALANCE</th>
                 <th>SAVINGS BALANCE</th>
 
@@ -104,17 +121,18 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                     
                     $count = 1;
                     while($row = mysqli_fetch_assoc($result)) {
+                        $customer_id = $row['customer_id'];
                         echo "
                             <tr>
                             <td>".$count."</td>
                             <td>".$row['card_no']."</td>
                             <td>".$row['customer_name']."</td>
-                            <td>".$row['zone']."</td>
-                            <td>".$row['reg_date']."</td>
-                            <td>".$row['savings_rate']."</td>
                             <td>".$row['loan_rate']."</td>
-                            <td>".$row['loan_balance']."</td>
-                            <td>".$row['savings_balance']."</td>
+                            <td>".getContNumber($customer_id, $month,'loan')."</td>
+                            <td>".$row['savings_rate']."</td>
+                            <td>".getContNumber($customer_id, $month,'savings')."</td>
+                            <td>".getMonthBalance($customer_id, $month,'savings')."</td>
+                            <td>".getMonthBalance($customer_id, $month,'loan')."</td>
                             
                             </tr>    
                             ";
@@ -132,7 +150,5 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
         </div>
     </div>
 </div>
-
-
 
 <?php require_once('partials/footer.php')?>

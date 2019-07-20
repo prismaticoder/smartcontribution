@@ -345,15 +345,43 @@ function getLoanBalance($id) {
 function getMonthBalance($customer_id,$month,$type) {
     $result = exec_query("SELECT `savings_balance`, `loan_balance` FROM `transactions` WHERE `month` = '$month' AND `customer_id` = '$customer_id' AND `transaction_time` = (SELECT MAX(transaction_time) FROM `transactions` WHERE `month` = '$month' AND `customer_id` = '$customer_id' )");
 
-    while ($row = mysqli_fetch_assoc($result)) {
-        if ($type == 'savings') {
-            $balance = $row['savings_balance'];
-        }
-        else {
-            $balance = $row['loan_balance'];
+    if (mysqli_num_rows($result) == 0) {
+        $balance = 0;
+    }
+
+    else {
+        while ($row = mysqli_fetch_assoc($result)) {
+            if ($type == 'savings') {
+                $balance = $row['savings_balance'];
+            }
+            else {
+                $balance = $row['loan_balance'];
+            }
         }
     }
+
+    
     return $balance;
+}
+
+function getContNumber($customer_id,$month,$type) {
+    $result = exec_query("SELECT SUM(savingsDayNo), SUM(loanDayNo) FROM `transactions` WHERE `customer_id` = '$customer_id' AND `month` = '$month'");
+
+    if (mysqli_num_rows($result) == 0) {
+        $answer = 0;
+    }
+    else {
+        while ($row = mysqli_fetch_assoc($result)) {
+            if ($type == 'savings') {
+                $answer = ($row['SUM(savingsDayNo)'] == null ? '-' : $row['SUM(savingsDayNo)']);
+            }
+            else {
+                $answer = ($row['SUM(loanDayNo)'] == null ? '-' : $row['SUM(loanDayNo)']);
+            }
+        } 
+    }
+
+    return $answer;
 }
 
 
