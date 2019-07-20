@@ -86,9 +86,9 @@ $role = $_SESSION['role'];
         
             <button type="" class="btn btn-dark dropdown-toggle" data-toggle="dropdown"><i class="fa fa-book"></i> Reports<span class="caret"></span></button>
             <ul class="dropdown-menu btn-dark">
-                <li><a href="./transactions.php">Transactions</a></li>
+                <li><a href="./transactions.php">Transaction Reports</a></li>
                 <li class="dropdown-divider"></li>
-                <li><a href="./balances.php">Balances</a></li>
+                <li><a href="./balances.php">Balance Reports</a></li>
             </ul>
         
         
