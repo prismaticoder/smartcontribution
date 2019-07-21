@@ -93,6 +93,14 @@ $( function() {
             dataType: 'json',
             success: function(response) {
                 myTableau2.clear().rows.add(response).draw();
+                if (bmonth != "") {
+                    $('.headerText').html(bmonth);
+                }
+                if (bzone != "") {
+                    $('.zoneText').html(bzone)
+                }
+                $('#totalLoan').html(myTableau2.column(7).data().sum())
+                $('#totalSavings').html(myTableau2.column(8).data().sum())
             }
         })
 

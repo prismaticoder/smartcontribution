@@ -373,10 +373,10 @@ function getContNumber($customer_id,$month,$type) {
     else {
         while ($row = mysqli_fetch_assoc($result)) {
             if ($type == 'savings') {
-                $answer = ($row['SUM(savingsDayNo)'] == null ? '-' : $row['SUM(savingsDayNo)']);
+                $answer = ($row['SUM(savingsDayNo)'] == null ? 0 : $row['SUM(savingsDayNo)']);
             }
             else {
-                $answer = ($row['SUM(loanDayNo)'] == null ? '-' : $row['SUM(loanDayNo)']);
+                $answer = ($row['SUM(loanDayNo)'] == null ? 0 : $row['SUM(loanDayNo)']);
             }
         } 
     }

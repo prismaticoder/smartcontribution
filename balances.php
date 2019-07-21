@@ -33,10 +33,10 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
 <div class="container">
     <h1 class="w3-center">ISEOLUWA AL-MONYASHAU VENTURES</h1>
     <hr>
-    <h3 class="w3-center">BALANCE REPORT | <span class="headerText"><span class="dateFrom">____</span> - <span class="dateTo">____</span></span></h3>
+    <h3 class="w3-center">BALANCE REPORT | Month : <span class= "headerText"><?php echo $month; ?></span></h3>
     <table class="table" border="1">
         <tr>
-            <td><h4 class="w3-center">ZONE : <span class='zone'>ALL</span></h4></td>
+            <td><h4 class="w3-center">ZONE : <span class='zoneText'>ALL</span></h4></td>
         </tr>
     </table>
     
@@ -130,8 +130,8 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
                     ?>
                 </tbody>
                 <tfoot>
-                <tr><td colspan="9">TOTAL LOAN BALANCE =<span id="totalLoan"><?php echo $loanBalance?></span></td></tr>
-                <tr><td colspan="9">TOTAL SAVINGS BALANCE =<span id="totalSavings"><?php echo $savingsBalance?></span></td></tr>
+                <tr><td>TOTAL LOAN BALANCE =<span id="totalLoan"><?php echo $loanBalance?></span></td>
+                <td>TOTAL SAVINGS BALANCE =<span id="totalSavings"><?php echo $savingsBalance?></span></td></tr>
                 </tfoot>
             </table>
         </div>

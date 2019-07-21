@@ -70,6 +70,7 @@ $role = $_SESSION['role'];
     <script src="js/jszip.min.js"></script>
     <script src="js/buttons.html5.min.js"></script>
     <script src="js/buttons.print.min.js"></script>
+    <script src="js/sum().js"></script>
     <script src="js/functions.js"></script>
     <title>The PayDay App | <?php echo $title;?> </title>
 </head>
