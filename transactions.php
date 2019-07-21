@@ -226,7 +226,11 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 <?php
 
-if (isset($_GET['report']) or $_GET['report'] != "") {
+if (!isset($_GET['report']) or $_GET['report'] == "") {
+    echo "<script>setGeneral();</script>";
+}
+
+else {
     $report = $_GET['report'];
 
     if ($report == 'general') {
@@ -238,10 +242,6 @@ if (isset($_GET['report']) or $_GET['report'] != "") {
     else if ($report == 'daily') {
         echo "<script>setDaily();</script>";
     }
-}
-
-else {
-    echo "<script>setGeneral();</script>";
 }
 
 ?>
