@@ -12,6 +12,7 @@ function setMonthly() {
     $('#month').val(curMonth)
     $('.headerText').html("Month : " + curMonth)
     $('#mRow').addClass('activeBar');
+    $('#totalAmount').html(myTableau.column(10).data().sum())
 
 }
 
@@ -23,6 +24,7 @@ function setDaily() {
     $('#dateToDiv').html("");
     $('.headerText').html("Date : " + today.getFullYear()+'-'+("0" + (today.getMonth()+1)).slice(-2)+'-'+ today.getDate())
     $('#dRow').addClass('activeBar');  
+    $('#totalAmount').html(myTableau.column(10).data().sum())
 }
 
 $( function() {
@@ -136,7 +138,8 @@ $( function() {
                     $('.dateFrom').html(dateFrom);
                     $('.dateTo').html(dateTo);
                     $('.zone').html(zone);
-                    $('.type').html(transType); 
+                    $('.type').html(transType);
+                    $('#totalAmount').html(myTableau.column(10).data().sum()) 
                 }
             })
         }
@@ -155,7 +158,9 @@ $( function() {
                     myTableau.clear().rows.add(response).draw();
                     $('.zone').html(zone);
                     $('.type').html(transType);
-                    $('.headerText').html("TRANSACTION REPORT | Month : " + month)
+                    $('.headerText').html("TRANSACTION REPORT | Month : " + month);
+                    $('#totalAmount').html(myTableau.column(10).data().sum()) 
+
                 }
             })
         }
@@ -173,7 +178,9 @@ $( function() {
                     myTableau.clear().rows.add(response).draw();
                     $('.zone').html(zone);
                     $('.type').html(transType);
-                    $('.headerText').html("TRANSACTION REPORT | Date : " + day)
+                    $('.headerText').html("TRANSACTION REPORT | Date : " + day);
+                    $('#totalAmount').html(myTableau.column(10).data().sum()) 
+
                 }
             })
         }

@@ -12,6 +12,12 @@ while ($zone_rows = mysqli_fetch_assoc($zone_result)) {
     }
 };
 
+$sumResult = exec_query("SELECT SUM(amount) AS total FROM `transactions`");
+
+while ($sumRow = mysqli_fetch_assoc($sumResult)) {
+    $totalAmount = $sumRow['total'];
+}
+
 if (!isset($_GET['report']) or $_GET['report'] == "") {
     $result = exec_query("SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.transaction_time,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.savings_balance,transactions.loan_balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id ORDER BY transactions.transaction_time DESC");
 }
@@ -219,6 +225,9 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 ?>
 </tbody>
+<tfoot>
+<tr><td>TOTAL = <span id="totalAmount"><?php echo $totalAmount?></span></td></tr>
+</tfoot>
 </table>
 </div>
 </div>
