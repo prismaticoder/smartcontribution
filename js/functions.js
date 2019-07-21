@@ -92,7 +92,6 @@ $( function() {
             },
             dataType: 'json',
             success: function(response) {
-                alert('success')
                 myTableau2.clear().rows.add(response).draw();
             }
         })

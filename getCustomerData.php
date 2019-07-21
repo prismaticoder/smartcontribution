@@ -306,7 +306,7 @@ else if (isset($_GET['dateFrom']) and isset($_GET['dateTo']) and isset($_GET['zo
     $type = $_GET['type'];
     $response = [];
 
-    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.transaction_time,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.savings_balance,,transactions.loan_balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date >= '$dateFrom' AND transactions.transaction_date <= '$dateTo' ";
+    $query = "SELECT transactions.transaction_id,transactions.customer_id,transactions.transaction_date,transactions.transaction_time,transactions.month,transactions.savings_rate,transactions.loan_rate,transactions.savingsDayNo,transactions.loanDayNo,transactions.amount,transactions.description,transactions.type,transactions.savings_balance,transactions.loan_balance,transactions.isReversed,main_customers.customer_name,main_customers.card_no,zone.zone FROM `transactions` INNER JOIN `main_customers` ON transactions.customer_id = main_customers.customer_id INNER JOIN `zone` ON main_customers.zone_id = zone.zone_id WHERE transactions.transaction_date >= '$dateFrom' AND transactions.transaction_date <= '$dateTo' ";
     
     if ($zone != "") {
         $query.="AND zone.zone = '$zone' ";
