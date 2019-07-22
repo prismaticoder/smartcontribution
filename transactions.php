@@ -74,7 +74,7 @@ else {
                 <div class="col-md-3">
                     <div id="dateFromDiv" class="form-group required">
                         <label for="searchForm">DateRange (From)</label>
-                        <input required value="<?php echo date('Y-m-d')?>" name="dateFrom" id="dateFrom" class="form-control datepicker" placeholder='&#128197;'/>
+                        <input required value="--Start--" name="dateFrom" id="dateFrom" class="form-control datepicker" placeholder='&#128197;'/>
                     </div>
                 
                     <div id="dateToDiv" class="form-group required">

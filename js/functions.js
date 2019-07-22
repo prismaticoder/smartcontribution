@@ -121,7 +121,26 @@ $( function() {
                 }
             }
         },
-            {extend: 'print', footer: true},
+            {extend: 'print', 
+            footer: true,
+            title: function() {
+                let params = new URLSearchParams(window.location.search);
+                let type = params.get('report');
+
+                if (type == null || type == "") {
+                    type = 'general';
+                }
+        
+                if (type == 'general') {
+                    return 'Transaction Report | From : ' + $('#dateFrom').val() + ' To : ' + $('#dateTo').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+                else if (type == 'monthly') {
+                    return 'Transaction Report | Month : ' + $('#month').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+                else if (type == 'daily') {
+                    return 'Transaction Report | Day : ' + $('#chooseDay').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+            }},
         ],
     })
 
