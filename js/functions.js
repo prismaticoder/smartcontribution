@@ -39,8 +39,88 @@ $( function() {
         // serverSide: true,
         dom: 'Bfrtip',
         buttons: [
-            {extend: 'csv', footer: true},
-            {extend: 'excel', footer: true},
+            {extend: 'csv', 
+            footer: true,
+            filename: function() {
+                let params = new URLSearchParams(window.location.search);
+                let type = params.get('report');
+
+                if (type == null || type == "") {
+                    type = 'general';
+                }
+
+                if (type == 'general') {
+                    return 'transactions_' + $('#dateFrom').val() + '_' + $('#dateTo').val() + '_' + $('.zone').text().toLowerCase();
+                }
+                else if (type == 'monthly') {
+                    return 'transactions_' + $('#month').val() + '_' + $('.zone').text().toLowerCase();
+                }
+                else if (type == 'daily') {
+                    return 'transactions_' + $('#chooseDay').val() + '_' + $('.zone').text().toLowerCase();
+                }
+        
+                 
+            },
+            title: function() {
+                let params = new URLSearchParams(window.location.search);
+                let type = params.get('report');
+
+                if (type == null || type == "") {
+                    type = 'general';
+                }
+        
+                if (type == 'general') {
+                    return 'Transaction Report | From : ' + $('#dateFrom').val() + ' To : ' + $('#dateTo').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+                else if (type == 'monthly') {
+                    return 'Transaction Report | Month : ' + $('#month').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+                else if (type == 'daily') {
+                    return 'Transaction Report | Day : ' + $('#chooseDay').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+            }
+        },
+            {extend: 'excel', 
+            footer: true,
+            filename: function() {
+                let params = new URLSearchParams(window.location.search);
+                let type = params.get('report');
+
+                if (type == null || type == "") {
+                    type = 'general';
+                }
+
+                if (type == 'general') {
+                    return 'transactions_' + $('#dateFrom').val() + '_' + $('#dateTo').val() + '_' + $('.zone').text().toLowerCase();
+                }
+                else if (type == 'monthly') {
+                    return 'transactions_' + $('#month').val() + '_' + $('.zone').text().toLowerCase();
+                }
+                else if (type == 'daily') {
+                    return 'transactions_' + $('#chooseDay').val() + '_' + $('.zone').text().toLowerCase();
+                }
+        
+                 
+            },
+            title: function() {
+                let params = new URLSearchParams(window.location.search);
+                let type = params.get('report');
+
+                if (type == null || type == "") {
+                    type = 'general';
+                }
+        
+                if (type == 'general') {
+                    return 'Transaction Report | From : ' + $('#dateFrom').val() + ' To : ' + $('#dateTo').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+                else if (type == 'monthly') {
+                    return 'Transaction Report | Month : ' + $('#month').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+                else if (type == 'daily') {
+                    return 'Transaction Report | Day : ' + $('#chooseDay').val() + ' | Zone : ' + $('.zone').text() + ' | Type : ' + $('.type').text();
+                }
+            }
+        },
             {extend: 'print', footer: true},
         ],
     })
@@ -51,8 +131,8 @@ $( function() {
         // serverSide: true,
         dom: 'Bfrtip',
         buttons: [
-            {extend: 'csv', footer: true},
-            {extend: 'excel', footer: true},
+            {extend: 'csv', footer: true, filename: function() {return 'balance-' + $('.headerText').text().toLowerCase() + '-' + $('.zoneText').text().toLowerCase()}},
+            {extend: 'excel', footer: true, filename: function() {return 'balance-' + $('.headerText').text().toLowerCase() + '-' + $('.zoneText').text().toLowerCase()}, title: function() {return "Balance Report | Zone : " + $('.zoneText').text() + " | Month : " + $('.headerText').text() }},
             {extend: 'print', footer: true}
         ],
     })
@@ -137,8 +217,13 @@ $( function() {
                     myTableau.clear().rows.add(response).draw();
                     $('.dateFrom').html(dateFrom);
                     $('.dateTo').html(dateTo);
-                    $('.zone').html(zone);
-                    $('.type').html(transType);
+                    if (zone != "") {
+                        $('.zone').html(zone);
+                    }
+                    if (transType != "") {
+                        $('.type').html(transType);
+                    }
+                    
                     $('#totalAmount').html(myTableau.column(10).data().sum()) 
                 }
             })
@@ -156,8 +241,12 @@ $( function() {
                 success: function(response) {
                     console.log('general!')
                     myTableau.clear().rows.add(response).draw();
-                    $('.zone').html(zone);
-                    $('.type').html(transType);
+                    if (zone != "") {
+                        $('.zone').html(zone);
+                    }
+                    if (transType != "") {
+                        $('.type').html(transType);
+                    }
                     $('.headerText').html("TRANSACTION REPORT | Month : " + month);
                     $('#totalAmount').html(myTableau.column(10).data().sum()) 
 
@@ -176,8 +265,12 @@ $( function() {
                 dataType: 'json',
                 success: function(response) {
                     myTableau.clear().rows.add(response).draw();
-                    $('.zone').html(zone);
-                    $('.type').html(transType);
+                    if (zone != "") {
+                        $('.zone').html(zone);
+                    }
+                    if (transType != "") {
+                        $('.type').html(transType);
+                    }
                     $('.headerText').html("TRANSACTION REPORT | Date : " + day);
                     $('#totalAmount').html(myTableau.column(10).data().sum()) 
 
