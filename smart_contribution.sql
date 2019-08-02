@@ -214,12 +214,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role_id`, `username`, `password`) VALUES
-(1, 1, 'oyee', 'admin'),
-(2, 3, 'ade', 'ade'),
-(3, 1, 'ayinde', 'sulaimon'),
-(4, 3, 'lukman', 'oyee'),
-(6, 1, 'jesutomiwa', 'jesutomiwa99'),
-(7, 2, 'onyinye', 'schooler');
+(1, 1, 'user1', 'superadmin'),
+(2, 2, 'user2', 'admin'),
+(3, 3, 'user3', 'staff')
 
 -- --------------------------------------------------------
 
