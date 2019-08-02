@@ -27,5 +27,6 @@
 4. ###### HAVE FUN!
   Have fun working with the app, it's also available for all contributions and improvements
   
- Yours truly,
- Jesutomiwa :)
+Happy Coding,
+ 
+Jesutomiwa :)
