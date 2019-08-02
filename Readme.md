@@ -1,5 +1,7 @@
 # THE PAYDAY APP
 
+The PayDay App is a web application designed for use in small scale cooperative societies in keeping track of records and accounts.
+
 ### STEPS FOR REPRODUCING THIS PROJECT LOCALLY
 
 1. ###### DOWNLOAD XAMPP
