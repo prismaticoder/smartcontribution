@@ -1,4 +1,6 @@
-##THE PAYDAY APP
+# THE PAYDAY APP
+
+###### STEPS FOR RE
 
 Export the sql file, go to localhost/phpmyadmin
 Users and their roles
